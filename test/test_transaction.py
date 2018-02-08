@@ -22,7 +22,7 @@ import sys
 from rest.api.api import require_ok
 import cryption
 print help(cryption)
-from cryption.cryption import sign
+from cryption.crypto import sign
 ROOT_PATH = os.path.join(os.path.dirname(__file__),
         "..")
 IMPORT_PATH = os.path.join(ROOT_PATH,
@@ -66,7 +66,7 @@ class TransactionTest(unittest.TestCase):
             }
         }
 
-        tc = Transaction(url, apikey, secret_key_b64, nonce, did, cert_path)
+        tc = Transaction(url, apikey, cert_path)
         signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
         body = {
             "payload": json.dumps(payload),
