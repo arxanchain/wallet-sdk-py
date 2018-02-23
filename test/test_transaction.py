@@ -21,7 +21,6 @@ import os
 import sys
 from rest.api.api import require_ok
 import cryption
-print help(cryption)
 from cryption.crypto import sign
 ROOT_PATH = os.path.join(os.path.dirname(__file__),
         "..")
