@@ -1,12 +1,9 @@
 """
 Copyright ArxanFintech Technology Ltd. 2018 All Rights Reserved.
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
                  http://www.apache.org/licenses/LICENSE-2.0
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,12 +18,15 @@ import os
 import sys
 from rest.api.api import require_ok
 import cryption
-print help(cryption)
 from cryption.crypto import sign
-ROOT_PATH = os.path.join(os.path.dirname(__file__),
-        "..")
-IMPORT_PATH = os.path.join(ROOT_PATH,
-        "api")
+ROOT_PATH = os.path.join(
+    os.path.dirname(__file__),
+    ".."
+    )
+IMPORT_PATH = os.path.join(
+    ROOT_PATH,
+    "api"
+    )
 sys.path.append(IMPORT_PATH)
 from transaction import Transaction
 
@@ -36,7 +36,7 @@ class TransactionTest(unittest.TestCase):
         pass
 
     def test_transfer_asset(self):
-        url = "http://172.16.13.2:9143"
+        url = "http://backend.com"
         apikey = "alice"
         secret_key_b64 = "0lxEFzMQhn68vY2F0f+nOwP7kl5zjahjPcfyMAJVmzn0HNQssIIYh+c2CgCKEHeUvxqCu6W/sJKqKt2DLJnKpw=="
         nonce = "nonce"
@@ -74,7 +74,7 @@ class TransactionTest(unittest.TestCase):
             	"creator": did,
             	"created": create_time,	
             	"nonce": nonce,
-            	"signatureValue": signature
+            	"signature_value": signature
             }
         }
 

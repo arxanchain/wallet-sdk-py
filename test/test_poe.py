@@ -15,13 +15,14 @@ limitations under the License.
 """
 
 import unittest
+from api.poe import POEClient
 
 class POETest(unittest.TestCase):
     """POE test. """
     def setUp(self):
         pass
 
-    def test_create(self):
+    def test_create_succ(self):
         pass
 
     def test_update(self):

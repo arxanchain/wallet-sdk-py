@@ -41,7 +41,7 @@ class AuditClient(object):
 
         return header
 
-    def __set_params(self, header, body, req_dir):
+    def __set_params(self, header, req_dir, body={}):
         header = self.__set_header(header)
         request_url = "/".join([
             self.__url,
@@ -59,9 +59,9 @@ class AuditClient(object):
     def audits_all_wallet(self, header):
         """Auditing all wallet."""
 
-        header = self.set_header(header)
+        req_dir = "audits"
         method = do_get
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, req_dir)
         return do_request(
             req_params,
             self.__api_key,
@@ -69,13 +69,13 @@ class AuditClient(object):
             method,
             )
 
-    def audits_one_wallet(self, header, _id):
+    def audits_one_wallet(self, header, id_):
         """Auditing a wallet."""
 
         req_dir = "audits"
-        req_dir = ":".join([req_dir, "id={}".format(id_)])
+        req_dir = "?".join([req_dir, "id={}".format(id_)])
         method = do_get
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, req_dir)
         return do_request(
             req_params,
             self.__api_key,
@@ -88,7 +88,7 @@ class AuditClient(object):
 
         req_dir = "reverse"
         method = do_post
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, req_dir, body)
         return do_request(
             req_params,
             self.__api_key,

@@ -41,14 +41,24 @@ class POEClient(object):
 
         return header
 
-    def __set_params(self, header, body, req_dir):
+    def __set_params(self, header, req_dir, url_params="", body={}):
         header = self.__set_header(header)
-        request_url = "/".join([
-            self.__url,
-            VERSION,
-            self.__path,
-            req_dir
-            ])
+        if req_dir:
+            request_url = "/".join([
+                self.__url,
+                VERSION,
+                self.__path,
+                req_dir
+                ])
+        else:
+            request_url = "/".join([
+                self.__url,
+                VERSION,
+                self.__path,
+                ])
+
+        if url_params:
+            request_url = "?".join([request_url, url_params])
         req_params = {
             "url": request_url,
             "body": body,
@@ -61,7 +71,7 @@ class POEClient(object):
 
         req_dir = "create"
         method = do_post
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, req_dir, body=body)
         return do_request(
             req_params,
             self.__api_key,
@@ -74,7 +84,7 @@ class POEClient(object):
 
         req_dir = "update"
         method = do_put
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, req_dir, body=body)
         return do_request(
             req_params,
             self.__api_key,
@@ -87,7 +97,7 @@ class POEClient(object):
 
         req_dir = "delete"
         method = do_put
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, req_dir, body=body)
         return do_request(
             req_params,
             self.__api_key,
@@ -98,9 +108,9 @@ class POEClient(object):
     def query(self, header, id_):
         """Query a POE."""
 
-        req_dir = "".join([":", id_])
+        req_dir = "id={}".format(id_)
         method = do_get
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, "", url_params=req_dir)
         return do_request(
             req_params,
             self.__api_key,
@@ -113,7 +123,7 @@ class POEClient(object):
 
         req_dir = "issue"
         method = do_post
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, req_dir, body=body)
         return do_request(
             req_params,
             self.__api_key,
@@ -126,7 +136,7 @@ class POEClient(object):
 
         req_dir = "withdraw"
         method = do_post
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, req_dir, body=body)
         return do_request(
             req_params,
             self.__api_key,

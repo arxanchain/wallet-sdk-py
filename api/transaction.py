@@ -85,3 +85,16 @@ class Transaction(object):
             self.__api_key,
             self.__cert_path,
             method)
+
+    def issue_colored_token(self, header, body):
+        """Issue colored token. """
+
+        req_dir = "tokens/issue"
+        method = do_post
+        req_params = self.__set_params(header, body, req_dir)
+        return do_request(
+            req_params,
+            self.__api_key,
+            self.__cert_path,
+            method)
+

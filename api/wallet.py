@@ -15,7 +15,7 @@ limitations under the License.
 """
 
 from rest.api.api import do_post, do_put, \
-        do_get, do_request
+    do_get, do_request
 
 VERSION = "v1"
 APIKEYHEADER = "API-Key"
@@ -46,7 +46,7 @@ class WalletClient(object):
 
         return header
 
-    def __set_params(self, header, body, req_dir):
+    def __set_params(self, header, req_dir, body={}):
         header = self.__set_header(header)
         request_url = "/".join([
             self.__url,
@@ -67,7 +67,7 @@ class WalletClient(object):
         req_dir = "register"
         method = do_post
 
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, req_dir, body)
         return do_request(
             req_params,
             self.__api_key,
@@ -80,7 +80,7 @@ class WalletClient(object):
         req_dir = "register/subwallet"
         method = do_post
 
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, req_dir, body)
         return do_request(
             req_params,
             self.__api_key,
@@ -93,7 +93,7 @@ class WalletClient(object):
 
         req_dir = "password"
         method = do_put
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, req_dir, body)
         return do_request(
             req_params,
             self.__api_key,
@@ -106,7 +106,7 @@ class WalletClient(object):
 
         req_dir = "payment_passwd"
         method = do_post
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, req_dir, body)
         return do_request(
             req_params,
             self.__api_key,
@@ -119,7 +119,7 @@ class WalletClient(object):
 
         req_dir = "payment_passwd"
         method = do_put
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, req_dir, body)
         return do_request(
             req_params,
             self.__api_key,
@@ -131,9 +131,9 @@ class WalletClient(object):
         """Query wallet infos."""
 
         req_dir = "info"
-        req_dir = ":".join([req_dir, "id={}".format(id_)])
+        req_dir = "?".join([req_dir, "id={}".format(id_)])
         method = do_get
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, req_dir)
         return do_request(
             req_params,
             self.__api_key,
@@ -145,9 +145,9 @@ class WalletClient(object):
         """Query wallet balalce"""
 
         req_dir = "balance"
-        req_dir = ":".join([req_dir, "id={}".format(id_)])
+        req_dir = "?".join([req_dir, "id={}".format(id_)])
         method = do_get
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, req_dir)
         return do_request(
             req_params,
             self.__api_key,
