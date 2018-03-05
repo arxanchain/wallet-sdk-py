@@ -16,11 +16,8 @@ limitations under the License.
 
 from rest.api.api import do_post, do_put, \
     do_get, do_request
-
-VERSION = "v1"
-APIKEYHEADER = "API-Key"
-FABIOROUTETAGHEADER = "Host"
-ROUTETAG = "Route-Tag"
+from common import VERSION, APIKEYHEADER, \
+    FABIOROUTETAGHEADER, ROUTETAG
 
 class WalletClient(object):
     """A wallet client implementation."""
@@ -46,21 +43,32 @@ class WalletClient(object):
 
         return header
 
-    def __set_params(self, header, req_dir, body={}):
+    def __set_params(self, header, req_path, url_params={}, body={}):
         header = self.__set_header(header)
-        request_url = "/".join([
-            self.__url,
-            VERSION,
-            self.__path,
-            req_dir
-            ])
+        if req_path:
+            request_url = "/".join([
+                self.__url,
+                VERSION,
+                self.__path,
+                req_path
+                ])
+        else:
+            request_url = "/".join([
+                self.__url,
+                VERSION,
+                self.__path,
+                ])
+
+        if url_params:
+            params = "&".join("{}={}".format(x, url_params[x]) \
+                for x in url_params)
+            request_url = "?".join([request_url, params])
         req_params = {
             "url": request_url,
             "body": body,
             "headers": header
             }
         return req_params
-
 
     def register(self, header, body):
         """Register user wallet."""
@@ -146,8 +154,9 @@ class WalletClient(object):
 
         req_dir = "balance"
         req_dir = "?".join([req_dir, "id={}".format(id_)])
+        params = {"id": id_}
         method = do_get
-        req_params = self.__set_params(header, req_dir)
+        req_params = self.__set_params(header, url_params=params, req_path=req_dir)
         return do_request(
             req_params,
             self.__api_key,

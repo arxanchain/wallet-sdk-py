@@ -14,8 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from rest.api.api import do_post, do_request
-from wallet import VERSION, APIKEYHEADER, FABIOROUTETAGHEADER, ROUTETAG
+import json
+from rest.api.api import do_post, do_request, do_get
+from common import VERSION, APIKEYHEADER, \
+    FABIOROUTETAGHEADER, ROUTETAG, build_signature_body
 
 class Transaction(object):
     """A transaction client implementation."""
@@ -47,14 +49,25 @@ class Transaction(object):
 
         return header
 
-    def __set_params(self, header, body, req_dir):
+    def __set_params(self, header, req_path, url_params=[], body={}):
         header = self.__set_header(header)
-        request_url = "/".join([
-            self.__url,
-            VERSION,
-            self.__path,
-            req_dir
-            ])
+        if req_path:
+            request_url = "/".join([
+                self.__url,
+                VERSION,
+                self.__path,
+                req_path 
+                ])
+        else:
+            request_url = "/".join([
+                self.__url,
+                VERSION,
+                self.__path,
+                ])
+
+        if url_params:
+            params = "&".join("{}={}".format(x, url_params[x]) for x in url_params)
+            request_url = "?".join([request_url, params])
         req_params = {
             "url": request_url,
             "body": body,
@@ -65,36 +78,245 @@ class Transaction(object):
     def transfer_assets(self, header, body):
         """Transfer assets."""
 
-        req_dir = "assets/transfer"
+        req_path = "assets/transfer"
         method = do_post
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(
+            header,
+            req_path,
+            body=body
+            )
         return do_request(
             req_params,
             self.__api_key,
             self.__cert_path,
-            method)
+            method
+            )
+
+    def transfer_assets_with_sign(self, header, creator, created, privateB64, payload, nonce=""):
+        """Transfer assets with edd25519 signed body. """
+
+        payload = json.dumps(payload)
+        req_path = "assets/transfer"
+        method = do_post
+        signature = build_signature_body(
+            creator,
+            created,
+            nonce,
+            privateB64,
+            payload
+            )
+        body = {
+            "payload": payload,
+            "signature": signature
+            }
+        req_params = self.__set_params(
+            header,
+            req_path,
+            body=body
+            )
+        return do_request(
+            req_params,
+            self.__api_key,
+            self.__cert_path,
+            method
+            )
 
     def transfer_colored_tokens(self, header, body):
         """Transfer colored token. """
 
-        req_dir = "tokens/transfer"
+        req_path= "tokens/transfer"
         method = do_post
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(
+            header,
+            req_path,
+            body=body
+            )
         return do_request(
             req_params,
             self.__api_key,
             self.__cert_path,
-            method)
+            method
+            )
+
+    def transfer_colored_tokens_with_sign(self, header, creator, created, privateB64, payload, nonce=""):
+        """Transfer colored token with ed25519 signed body. """
+
+        payload = json.dumps(payload)
+        req_path= "tokens/transfer"
+        method = do_post
+        signature = build_signature_body(
+            creator,
+            created,
+            nonce,
+            privateB64,
+            payload
+            )
+        body = {
+            "payload": payload,
+            "signature": signature
+            }
+        req_params = self.__set_params(
+            header,
+            req_path,
+            body=body
+            )
+        return do_request(
+            req_params,
+            self.__api_key,
+            self.__cert_path,
+            method
+            )
 
     def issue_colored_token(self, header, body):
         """Issue colored token. """
 
-        req_dir = "tokens/issue"
+        req_path = "tokens/issue"
         method = do_post
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(
+            header,
+            req_path, 
+            body=body
+            )
         return do_request(
             req_params,
             self.__api_key,
             self.__cert_path,
-            method)
+            method
+            )
 
+    def issue_colored_token_with_sign(self, header, creator, created, privateB64, payload, nonce=""):
+        """Issue colored token with sign. """
+
+        payload = json.dumps(payload)
+        req_path = "tokens/issue"
+        method = do_post
+        signature = build_signature_body(
+            creator,
+            created,
+            nonce,
+            privateB64,
+            payload
+            )
+        body = {
+            "payload": payload,
+            "signature": signature
+            }
+        req_params = self.__set_params(
+            header,
+            req_path, 
+            body=body
+            )
+        return do_request(
+            req_params,
+            self.__api_key,
+            self.__cert_path,
+            method
+            )
+
+    def issue_asset(self, header, body):
+        """Issue asset. """
+
+        req_path= "assets/issue"
+        method = do_post
+        req_params = self.__set_params(
+            header,
+            req_path, 
+            body=body
+            )
+        return do_request(
+            req_params,
+            self.__api_key,
+            self.__cert_path,
+            method
+            )
+
+    def issue_asset_with_sign(self, header, creator, created, privateB64, payload, nonce=""):
+        """Issue asset with ed25519 signed body. """
+
+        payload = json.dumps(payload)
+        req_path= "assets/issue"
+        method = do_post
+        signature = build_signature_body(
+            creator,
+            created,
+            nonce,
+            privateB64,
+            payload
+            )
+        body = {
+            "payload": payload,
+            "signature": signature
+            }
+        req_params = self.__set_params(
+            header,
+            req_path,
+            body=body
+            )
+        return do_request(
+            req_params,
+            self.__api_key,
+            self.__cert_path,
+            method
+            )
+
+    def withdraw_colored_token(self, header, body):
+        """Withdraw colored token. """
+
+        req_path = "tokens/withdraw"
+        method = do_post
+        req_params = self.__set_params(
+            header,
+            req_path, 
+            body=body
+            )
+        return do_request(
+            req_params,
+            self.__api_key,
+            self.__cert_path,
+            method
+            )
+
+    def withdraw_colored_token_with_sign(self, header, creator, created, privateB64, payload, nonce=""):
+        """Withdraw colored token with ed25519 signed body. """
+
+        payload = json.dumps(payload)
+        req_path = "tokens/withdraw"
+        method = do_post
+        signature = build_signature_body(
+            creator,
+            created,
+            nonce,
+            privateB64,
+            payload
+            )
+        body = {
+            "payload": payload,
+            "signature": signature
+            }
+        req_params = self.__set_params(
+            header,
+            req_path,
+            body=body
+            )
+        return do_request(
+            req_params,
+            self.__api_key,
+            self.__cert_path,
+            method
+            )
+
+    def query_transaction_logs(self, header, type_, endpoint):
+        """Query transactions logs. """
+
+        req_path = "logs"
+        method = do_get
+        req_params = self.__set_params(
+            header,
+            req_path, 
+            )
+        return do_request(
+            req_params,
+            self.__api_key,
+            self.__cert_path,
+            method
+            )
