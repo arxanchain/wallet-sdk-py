@@ -23,10 +23,11 @@ setup(
         "six==1.11.0",
         "timeout-decorator==0.4.0",
         "urllib3==1.22",
-        "py-common==v1.5"
+        "py-common==1.5",
     ],
     dependency_links=[
-        "git+git://github.com/arxanchain/py-common.git#egg=py-common-v1.5"
+        "git+git://github.com/arxanchain/py-common.git#egg=py-common-1.5",
+
     ],
     include_package_data=True,
     zip_safe=False,

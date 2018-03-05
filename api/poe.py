@@ -14,11 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import json
 from rest.api.api import do_post, do_request, do_put, do_get
-from wallet import VERSION, APIKEYHEADER, FABIOROUTETAGHEADER, ROUTETAG
+from common import VERSION, APIKEYHEADER, \
+    FABIOROUTETAGHEADER, ROUTETAG, build_signature_body
 
 class POEClient(object):
-    """A POE clinet."""
+    """A POE client."""
 
     def __init__(self, url, api_key, cert_path):
         """Init POE client with url, api key and crypto lib. """
@@ -41,14 +43,26 @@ class POEClient(object):
 
         return header
 
-    def __set_params(self, header, body, req_dir):
+    def __set_params(self, header, req_path, url_params={}, body={}):
         header = self.__set_header(header)
-        request_url = "/".join([
-            self.__url,
-            VERSION,
-            self.__path,
-            req_dir
-            ])
+        if req_path:
+            request_url = "/".join([
+                self.__url,
+                VERSION,
+                self.__path,
+                req_path
+                ])
+        else:
+            request_url = "/".join([
+                self.__url,
+                VERSION,
+                self.__path,
+                ])
+
+        if url_params:
+            params = "&".join("{}={}".format(x, url_params[x]) \
+                for x in url_params)
+            request_url = "?".join([request_url, params])
         req_params = {
             "url": request_url,
             "body": body,
@@ -59,9 +73,39 @@ class POEClient(object):
     def create(self, header, body):
         """Create a POE."""
 
-        req_dir = "create"
+        req_path= "create"
         method = do_post
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, req_path, body=body)
+        return do_request(
+            req_params,
+            self.__api_key,
+            self.__cert_path,
+            method,
+            )
+
+    def create_with_sign(self, header, creator, created, privateB64, payload, nonce=""):
+        """Create a POE with ed25519 signed body. """
+
+        payload = json.dumps(payload)
+        req_path = "create"
+        method = do_post
+        signature = build_signature_body(
+            creator,
+            created,
+            nonce,
+            privateB64,
+            payload
+            )
+        body = {
+            "payload": payload,
+            "signature": signature
+            }
+
+        req_params = self.__set_params(
+            header,
+            req_path,
+            body=body
+            )
         return do_request(
             req_params,
             self.__api_key,
@@ -72,9 +116,13 @@ class POEClient(object):
     def update(self, header, body):
         """Update a POE."""
 
-        req_dir = "update"
+        req_path = "update"
         method = do_put
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(
+            header,
+            req_path,
+            body=body
+            )
         return do_request(
             req_params,
             self.__api_key,
@@ -82,12 +130,29 @@ class POEClient(object):
             method,
             )
 
-    def delete(self, header, body):
-        """Delete a POE."""
+    def update_with_sign(self, header, creator, created, privateB64, payload, nonce=""):
+        """Update a POE with ed25519 signed body."""
 
-        req_dir = "delete"
+        payload = json.dumps(payload)
+        req_path = "update"
         method = do_put
-        req_params = self.__set_params(header, body, req_dir)
+        signature = build_signature_body(
+            creator,
+            created,
+            nonce,
+            privateB64,
+            payload
+            )
+        body = {
+            "payload": payload,
+            "signature": signature
+            }
+
+        req_params = self.__set_params(
+            header,
+            req_path,
+            body=body
+            )
         return do_request(
             req_params,
             self.__api_key,
@@ -98,9 +163,9 @@ class POEClient(object):
     def query(self, header, id_):
         """Query a POE."""
 
-        req_dir = "".join([":", id_])
+        params= {"id": id_}
         method = do_get
-        req_params = self.__set_params(header, body, req_dir)
+        req_params = self.__set_params(header, "", url_params=params)
         return do_request(
             req_params,
             self.__api_key,
@@ -108,28 +173,11 @@ class POEClient(object):
             method,
             )
 
-    def issue(self, header, body):
-        """Issue a POE."""
+    def upload(self, header, body):
+        """Upload POE file. """
+        pass
 
-        req_dir = "issue"
-        method = do_post
-        req_params = self.__set_params(header, body, req_dir)
-        return do_request(
-            req_params,
-            self.__api_key,
-            self.__cert_path,
-            method,
-            )
+    def upload_with_sign(self, header, creator, created, privateB64, payload, poe_id, poe_file, nonce=""):
+        """Upload POE file with ed25519 signed body. """
+        pass
 
-    def withdraw(self, header, body):
-        """Withdraw a POE."""
-
-        req_dir = "withdraw"
-        method = do_post
-        req_params = self.__set_params(header, body, req_dir)
-        return do_request(
-            req_params,
-            self.__api_key,
-            self.__cert_path,
-            method,
-            )
