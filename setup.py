@@ -24,11 +24,10 @@ setup(
         "timeout-decorator==0.4.0",
         "urllib3==1.22",
         "py-common==v1.5",
-        "httpretty==0.8.14"
     ],
     dependency_links=[
         "git+git://github.com/arxanchain/py-common.git#egg=py-common-v1.5",
-        "git+git@github.com:gabrielfalcao/HTTPretty.git#egg=httpretty-0.8.14"
+
     ],
     include_package_data=True,
     zip_safe=False,
