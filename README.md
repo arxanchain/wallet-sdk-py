@@ -11,16 +11,10 @@ Welcome for any kind of contributions, such as open issues, fix bugs and improve
 
 ## Install
 
-The following command will install wallet-sdk-py in a virtual environment.
+The following command will install wallet-sdk-py in your python environment.
 
 ```sh
-
-$ virtualenv venv  # create a virtual env
-$ source venv/bin/activate  # activate virtual env
-
-$ python setup.py install # install py-common
-
-$ deactivate # deactivate virtual env
+$ python setup.py install # install wallet-sdk-py
 ```
 
 ## Usage
