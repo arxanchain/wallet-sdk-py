@@ -173,9 +173,22 @@ class POEClient(object):
             method,
             )
 
-    def upload(self, header, body):
+    def upload(self, header, body, file):
         """Upload POE file. """
-        pass
+        req_path = "upload"
+        method = do_post
+        req_params = self.__set_params(
+            header,
+            req_path,
+            body=body
+            )
+        req_params["files"] = open(file, 'rb')
+        return do_request(
+            req_params,
+            self.__api_key,
+            self.__cert_path,
+            method,
+            )
 
     def upload_with_sign(self, header, creator, created, privateB64, payload, poe_id, poe_file, nonce=""):
         """Upload POE file with ed25519 signed body. """
