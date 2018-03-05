@@ -1,0 +1,11 @@
+certifi==2018.1.18
+chardet==3.0.4
+funcsigs==1.0.2
+idna==2.6
+mock==2.0.0
+pbr==3.1.1
+requests==2.18.4
+six==1.11.0
+timeout-decorator==0.4.0
+urllib3==1.22
+-e git+git://github.com/arxanchain/py-common.git@master#egg=py-common

@@ -3,6 +3,9 @@
 from setuptools import setup, find_packages
 import io
 
+with open('./requirements.txt') as reqs_txt:
+    requirements = [line for line in reqs_txt]
+
 setup(
     name='wallet-sdk-py',
     version='1.5.0',
@@ -12,24 +15,8 @@ setup(
     download_url='https://github.com/arxanchain/wallet-sdk-py/',
     packages=find_packages(),
     platforms='any',
-    install_requires=[
-        "certifi",
-        "chardet==3.0.4",
-        "funcsigs==1.0.2",
-        "idna==2.6",
-        "mock==2.0.0",
-        "pbr==3.1.1",
-        "requests==2.18.4",
-        "six==1.11.0",
-        "timeout-decorator==0.4.0",
-        "urllib3==1.22",
-        "py-common==v1.5",
-        "httpretty==0.8.14"
-    ],
-    dependency_links=[
-        "git+git://github.com/arxanchain/py-common.git#egg=py-common-v1.5",
-        "git+git@github.com:gabrielfalcao/HTTPretty.git#egg=httpretty-0.8.14"
-    ],
+    install_requires=requirements,
+    dependency_links=[],
     include_package_data=True,
     zip_safe=False,
 )
