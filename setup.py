@@ -3,9 +3,6 @@
 from setuptools import setup, find_packages
 import io
 
-with open('./requirements.txt') as reqs_txt:
-    requirements = [line for line in reqs_txt]
-
 setup(
     name='wallet-sdk-py',
     version='1.5.0',
@@ -15,7 +12,7 @@ setup(
     download_url='https://github.com/arxanchain/wallet-sdk-py/',
     packages=find_packages(),
     platforms='any',
-    install_requires=requirements,
+    install_requires=[],
     dependency_links=[],
     include_package_data=True,
     zip_safe=False,
