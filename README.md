@@ -11,18 +11,12 @@ Welcome for any kind of contributions, such as open issues, fix bugs and improve
 
 ## Install
 
-The following command will install wallet-sdk-py in a virtual environment.
+The following command will install wallet-sdk-py in your python environment.
 
 ```sh
-
-$ virtualenv venv  # create a virtual env
-$ source venv/bin/activate  # activate virtual env
-
-$ python setup.py install # install py-common
-
-$ deactivate # deactivate virtual env
+$ pip install -r requirements.txt # install wallet-sdk-py
 ```
 
 ## Usage
 
-**Note:** Before using the wallet-sdk-python in your operating system, you need to configure your installed py-common package, for more details please refer to [py-common](https://github.com/arxanchain/py-common#usage)
+**Note:** Before using the wallet-sdk-python in your operating system, you need to configure your installed py-common package, for more details please refer to [usage of py-common](https://github.com/arxanchain/py-common#usage)
