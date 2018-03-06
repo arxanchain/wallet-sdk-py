@@ -75,7 +75,11 @@ class WalletClient(object):
         req_dir = "register"
         method = do_post
 
-        req_params = self.__set_params(header, req_dir, body)
+        req_params = self.__set_params(
+            header,
+            req_dir,
+            body=body
+            )
         return do_request(
             req_params,
             self.__api_key,
@@ -88,7 +92,11 @@ class WalletClient(object):
         req_dir = "register/subwallet"
         method = do_post
 
-        req_params = self.__set_params(header, req_dir, body)
+        req_params = self.__set_params(
+            header,
+            req_dir,
+            body=body
+            )
         return do_request(
             req_params,
             self.__api_key,
@@ -101,7 +109,11 @@ class WalletClient(object):
 
         req_dir = "password"
         method = do_put
-        req_params = self.__set_params(header, req_dir, body)
+        req_params = self.__set_params(
+            header,
+            req_dir,
+            body=body
+            )
         return do_request(
             req_params,
             self.__api_key,
@@ -114,7 +126,11 @@ class WalletClient(object):
 
         req_dir = "payment_passwd"
         method = do_post
-        req_params = self.__set_params(header, req_dir, body)
+        req_params = self.__set_params(
+            header,
+            req_dir,
+            body=body
+            )
         return do_request(
             req_params,
             self.__api_key,
@@ -127,7 +143,11 @@ class WalletClient(object):
 
         req_dir = "payment_passwd"
         method = do_put
-        req_params = self.__set_params(header, req_dir, body)
+        req_params = self.__set_params(
+            header,
+            req_dir,
+            body=body
+            )
         return do_request(
             req_params,
             self.__api_key,
@@ -156,7 +176,11 @@ class WalletClient(object):
         req_dir = "?".join([req_dir, "id={}".format(id_)])
         params = {"id": id_}
         method = do_get
-        req_params = self.__set_params(header, url_params=params, req_path=req_dir)
+        req_params = self.__set_params(
+            header,
+            url_params=params,
+            req_path=req_dir
+            )
         return do_request(
             req_params,
             self.__api_key,

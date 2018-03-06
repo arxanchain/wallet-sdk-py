@@ -75,7 +75,11 @@ class POEClient(object):
 
         req_path= "create"
         method = do_post
-        req_params = self.__set_params(header, req_path, body=body)
+        req_params = self.__set_params(
+            header,
+            req_path, 
+            body=body
+            )
         return do_request(
             req_params,
             self.__api_key,
@@ -83,7 +87,8 @@ class POEClient(object):
             method,
             )
 
-    def create_with_sign(self, header, creator, created, privateB64, payload, nonce=""):
+    def create_with_sign(self, header, creator, created, \
+            privateB64, payload, nonce=""):
         """Create a POE with ed25519 signed body. """
 
         payload = json.dumps(payload)
@@ -130,7 +135,8 @@ class POEClient(object):
             method,
             )
 
-    def update_with_sign(self, header, creator, created, privateB64, payload, nonce=""):
+    def update_with_sign(self, header, creator, \
+            created, privateB64, payload, nonce=""):
         """Update a POE with ed25519 signed body."""
 
         payload = json.dumps(payload)
@@ -165,7 +171,11 @@ class POEClient(object):
 
         params= {"id": id_}
         method = do_get
-        req_params = self.__set_params(header, "", url_params=params)
+        req_params = self.__set_params(
+            header,
+            "",
+            url_params=params
+            )
         return do_request(
             req_params,
             self.__api_key,
@@ -175,22 +185,24 @@ class POEClient(object):
 
     def upload(self, header, body, file):
         """Upload POE file. """
-        req_path = "upload"
-        method = do_post
-        req_params = self.__set_params(
-            header,
-            req_path,
-            body=body
-            )
-        req_params["files"] = open(file, 'rb')
-        return do_request(
-            req_params,
-            self.__api_key,
-            self.__cert_path,
-            method,
-            )
+        ## req_path = "upload"
+        ## method = do_post
+        ## req_params = self.__set_params(
+        ##     header,
+        ##     req_path,
+        ##     body=body
+        ##     )
+        ## req_params["files"] = open(file, 'rb')
+        ## return do_request(
+        ##     req_params,
+        ##     self.__api_key,
+        ##     self.__cert_path,
+        ##     method,
+        ##     )
+        pass
 
-    def upload_with_sign(self, header, creator, created, privateB64, payload, poe_id, poe_file, nonce=""):
+    def upload_with_sign(self, header, creator, created, \
+            privateB64, payload, poe_id, poe_file, nonce=""):
         """Upload POE file with ed25519 signed body. """
         pass
 
