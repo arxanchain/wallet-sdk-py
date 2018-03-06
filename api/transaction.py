@@ -49,7 +49,7 @@ class Transaction(object):
 
         return header
 
-    def __set_params(self, header, req_path, url_params=[], body={}):
+    def __set_params(self, header, req_path, url_params={}, body={}):
         header = self.__set_header(header)
         if req_path:
             request_url = "/".join([
@@ -66,7 +66,8 @@ class Transaction(object):
                 ])
 
         if url_params:
-            params = "&".join("{}={}".format(x, url_params[x]) for x in url_params)
+            params = "&".join("{}={}".format(x, url_params[x]) \
+                for x in url_params)
             request_url = "?".join([request_url, params])
         req_params = {
             "url": request_url,
@@ -92,7 +93,8 @@ class Transaction(object):
             method
             )
 
-    def transfer_assets_with_sign(self, header, creator, created, privateB64, payload, nonce=""):
+    def transfer_assets_with_sign(self, header, creator, \
+            created, privateB64, payload, nonce=""):
         """Transfer assets with edd25519 signed body. """
 
         payload = json.dumps(payload)
@@ -184,7 +186,8 @@ class Transaction(object):
             method
             )
 
-    def issue_colored_token_with_sign(self, header, creator, created, privateB64, payload, nonce=""):
+    def issue_colored_token_with_sign(self, header, creator, \
+            created, privateB64, payload, nonce=""):
         """Issue colored token with sign. """
 
         payload = json.dumps(payload)
@@ -230,7 +233,8 @@ class Transaction(object):
             method
             )
 
-    def issue_asset_with_sign(self, header, creator, created, privateB64, payload, nonce=""):
+    def issue_asset_with_sign(self, header, creator, \
+            created, privateB64, payload, nonce=""):
         """Issue asset with ed25519 signed body. """
 
         payload = json.dumps(payload)
@@ -276,7 +280,8 @@ class Transaction(object):
             method
             )
 
-    def withdraw_colored_token_with_sign(self, header, creator, created, privateB64, payload, nonce=""):
+    def withdraw_colored_token_with_sign(self, header, creator, \
+            created, privateB64, payload, nonce=""):
         """Withdraw colored token with ed25519 signed body. """
 
         payload = json.dumps(payload)
