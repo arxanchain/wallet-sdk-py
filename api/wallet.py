@@ -173,7 +173,6 @@ class WalletClient(object):
         """Query wallet balalce"""
 
         req_dir = "balance"
-        req_dir = "?".join([req_dir, "id={}".format(id_)])
         params = {"id": id_}
         method = do_get
         req_params = self.__set_params(
