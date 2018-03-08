@@ -21,3 +21,11 @@ $ python setup.py install # install wallet-sdk-py
 ## Usage
 
 **Note:** Before using the wallet-sdk-python in your operating system, you need to configure your installed py-common package, for more details please refer to [usage of py-common](https://github.com/arxanchain/py-common#usage)
+
+### Run unit test
+
+The following command will run unit test.
+
+```sh
+$ pytest
+```
