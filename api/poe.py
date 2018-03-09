@@ -87,7 +87,7 @@ class POEClient(object):
             method,
             )
 
-    def create_with_sign(self, header, creator, created, \
+    def create_with_sign(self, header, creator, created,
             privateB64, payload, nonce=""):
         """Create a POE with ed25519 signed body. """
 
@@ -135,7 +135,7 @@ class POEClient(object):
             method,
             )
 
-    def update_with_sign(self, header, creator, \
+    def update_with_sign(self, header, creator,
             created, privateB64, payload, nonce=""):
         """Update a POE with ed25519 signed body."""
 
@@ -201,7 +201,7 @@ class POEClient(object):
         ##     )
         pass
 
-    def upload_with_sign(self, header, creator, created, \
+    def upload_with_sign(self, header, creator, created,
             privateB64, payload, poe_id, poe_file, nonce=""):
         """Upload POE file with ed25519 signed body. """
         pass

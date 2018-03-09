@@ -69,6 +69,7 @@ class Transaction(object):
             params = "&".join("{}={}".format(x, url_params[x]) \
                 for x in url_params)
             request_url = "?".join([request_url, params])
+
         req_params = {
             "url": request_url,
             "body": body,
@@ -93,7 +94,7 @@ class Transaction(object):
             method
             )
 
-    def transfer_assets_with_sign(self, header, creator, \
+    def transfer_assets_with_sign(self, header, creator,
             created, privateB64, payload, nonce=""):
         """Transfer assets with edd25519 signed body. """
 
@@ -140,7 +141,8 @@ class Transaction(object):
             method
             )
 
-    def transfer_colored_tokens_with_sign(self, header, creator, created, privateB64, payload, nonce=""):
+    def transfer_colored_tokens_with_sign(self, header, creator,
+            created, privateB64, payload, nonce=""):
         """Transfer colored token with ed25519 signed body. """
 
         payload = json.dumps(payload)
@@ -186,7 +188,7 @@ class Transaction(object):
             method
             )
 
-    def issue_colored_token_with_sign(self, header, creator, \
+    def issue_colored_token_with_sign(self, header, creator,
             created, privateB64, payload, nonce=""):
         """Issue colored token with sign. """
 
@@ -233,7 +235,7 @@ class Transaction(object):
             method
             )
 
-    def issue_asset_with_sign(self, header, creator, \
+    def issue_asset_with_sign(self, header, creator,
             created, privateB64, payload, nonce=""):
         """Issue asset with ed25519 signed body. """
 
@@ -280,7 +282,7 @@ class Transaction(object):
             method
             )
 
-    def withdraw_colored_token_with_sign(self, header, creator, \
+    def withdraw_colored_token_with_sign(self, header, creator,
             created, privateB64, payload, nonce=""):
         """Withdraw colored token with ed25519 signed body. """
 
