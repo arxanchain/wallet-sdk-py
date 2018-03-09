@@ -36,8 +36,10 @@ class WalletClient(object):
 
         if APIKEYHEADER not in header:
             header[APIKEYHEADER] = self.__api_key
+
         if ROUTETAG not in header:
             header[ROUTETAG] = self.__route_tag
+
         if FABIOROUTETAGHEADER not in header:
             header[FABIOROUTETAGHEADER] = self.__route_tag
 
@@ -63,6 +65,7 @@ class WalletClient(object):
             params = "&".join("{}={}".format(x, url_params[x]) \
                 for x in url_params)
             request_url = "?".join([request_url, params])
+
         req_params = {
             "url": request_url,
             "body": body,
