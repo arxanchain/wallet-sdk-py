@@ -49,17 +49,17 @@ class WalletClient(object):
         header = self.__set_header(header)
         if req_path:
             request_url = "/".join([
-                self.__url,
-                VERSION,
-                self.__path,
-                req_path
-                ])
+                    self.__url,
+                    VERSION,
+                    self.__path,
+                    req_path
+                    ])
         else:
             request_url = "/".join([
-                self.__url,
-                VERSION,
-                self.__path,
-                ])
+                    self.__url,
+                    VERSION,
+                    self.__path,
+                    ])
 
         if url_params:
             params = "&".join("{}={}".format(x, url_params[x]) \
@@ -67,10 +67,10 @@ class WalletClient(object):
             request_url = "?".join([request_url, params])
 
         req_params = {
-            "url": request_url,
-            "body": body,
-            "headers": header
-            }
+                "url": request_url,
+                "body": body,
+                "headers": header
+                }
         return req_params
 
     def register(self, header, body):
@@ -79,16 +79,16 @@ class WalletClient(object):
         method = do_post
 
         req_params = self.__set_params(
-            header,
-            req_dir,
-            body=body
-            )
+                header,
+                req_dir,
+                body=body
+                )
         return do_request(
-            req_params,
-            self.__api_key,
-            self.__cert_path,
-            method,
-            )
+                req_params,
+                self.__api_key,
+                self.__cert_path,
+                method,
+                )
 
     def register_sub_wallet(self, header, body):
         """Register a sub wallet."""
@@ -96,16 +96,16 @@ class WalletClient(object):
         method = do_post
 
         req_params = self.__set_params(
-            header,
-            req_dir,
-            body=body
-            )
+                header,
+                req_dir,
+                body=body
+                )
         return do_request(
-            req_params,
-            self.__api_key,
-            self.__cert_path,
-            method,
-            )
+                req_params,
+                self.__api_key,
+                self.__cert_path,
+                method,
+                )
 
     def update_password(self, header, body):
         """Update wallet password."""
@@ -113,16 +113,16 @@ class WalletClient(object):
         req_dir = "password"
         method = do_put
         req_params = self.__set_params(
-            header,
-            req_dir,
-            body=body
-            )
+                header,
+                req_dir,
+                body=body
+                )
         return do_request(
-            req_params,
-            self.__api_key,
-            self.__cert_path,
-            method,
-            )
+                req_params,
+                self.__api_key,
+                self.__cert_path,
+                method,
+                )
 
     def create_payment_password(self, header, body):
         """Create wallet payment password."""
@@ -130,16 +130,16 @@ class WalletClient(object):
         req_dir = "payment_passwd"
         method = do_post
         req_params = self.__set_params(
-            header,
-            req_dir,
-            body=body
-            )
+                header,
+                req_dir,
+                body=body
+                )
         return do_request(
-            req_params,
-            self.__api_key,
-            self.__cert_path,
-            method,
-            )
+                req_params,
+                self.__api_key,
+                self.__cert_path,
+                method,
+                )
 
     def update_payment_password(self, header, body):
         """Update payment password."""
@@ -147,16 +147,16 @@ class WalletClient(object):
         req_dir = "payment_passwd"
         method = do_put
         req_params = self.__set_params(
-            header,
-            req_dir,
-            body=body
-            )
+                header,
+                req_dir,
+                body=body
+                )
         return do_request(
-            req_params,
-            self.__api_key,
-            self.__cert_path,
-            method,
-            )
+                req_params,
+                self.__api_key,
+                self.__cert_path,
+                method,
+                )
 
     def query_wallet_infos(self, header, id_):
         """Query wallet infos."""
@@ -166,11 +166,11 @@ class WalletClient(object):
         method = do_get
         req_params = self.__set_params(header, req_dir)
         return do_request(
-            req_params,
-            self.__api_key,
-            self.__cert_path,
-            method,
-            )
+                req_params,
+                self.__api_key,
+                self.__cert_path,
+                method,
+                )
 
     def query_wallet_balance(self, header, id_):
         """Query wallet balalce"""
@@ -179,13 +179,13 @@ class WalletClient(object):
         params = {"id": id_}
         method = do_get
         req_params = self.__set_params(
-            header,
-            url_params=params,
-            req_path=req_dir
-            )
+                header,
+                url_params=params,
+                req_path=req_dir
+                )
         return do_request(
-            req_params,
-            self.__api_key,
-            self.__cert_path,
-            method,
-            )
+                req_params,
+                self.__api_key,
+                self.__cert_path,
+                method,
+                )

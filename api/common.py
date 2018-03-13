@@ -20,12 +20,17 @@ def build_signature_body(creator, created, nonce, privateB64, payload):
     :Returns: signed body dict
     """
     
-    signature = sign(payload, privateB64, creator, nonce)
+    signature = sign(
+            payload,
+            privateB64,
+            creator,
+            nonce
+            )
     result = {
-        "creator": creator,
-        "created": created,
-        "nonce": nonce,
-        "signature_value": signature
-        }
+            "creator": creator,
+            "created": created,
+            "nonce": nonce,
+            "signature_value": signature
+            }
     return result
 
