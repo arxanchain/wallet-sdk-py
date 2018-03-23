@@ -67,7 +67,7 @@ class Transaction(object):
 
         if url_params:
             params = "&".join("{}={}".format(x, url_params[x]) \
-                for x in url_params)
+                    for x in url_params)
             request_url = "?".join([request_url, params])
 
         req_params = {
@@ -312,14 +312,42 @@ class Transaction(object):
                 method
                 )
 
-    def query_transaction_logs(self, header, type_, endpoint):
+    def query_txn_logs_with_endpoint(self, header, type_, endpoint):
         """Query transactions logs. """
 
         req_path = "logs"
         method = do_get
+        params = {
+                "type": type_,
+                "endpoin": endpoint
+                }
+
         req_params = self.__set_params(
             header,
             req_path, 
+            params
+            )
+        return do_request(
+            req_params,
+            self.__api_key,
+            self.__cert_path,
+            method
+            )
+
+    def query_txn_logs_with_id(self, header, type_, id_):
+        """Query transactions logs with param id. """
+
+        req_path = "logs"
+        method = do_get
+        params = {
+                "type": type_,
+                "id": id_
+                }
+
+        req_params = self.__set_params(
+            header,
+            req_path, 
+            params
             )
         return do_request(
             req_params,

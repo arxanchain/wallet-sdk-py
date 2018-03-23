@@ -63,7 +63,7 @@ class WalletClient(object):
 
         if url_params:
             params = "&".join("{}={}".format(x, url_params[x]) \
-                for x in url_params)
+                    for x in url_params)
             request_url = "?".join([request_url, params])
 
         req_params = {

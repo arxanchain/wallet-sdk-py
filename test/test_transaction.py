@@ -875,7 +875,7 @@ class TransactionTest(unittest.TestCase):
                 _, resp = tc.withdraw_colored_token_with_sign({}, fromdid, create_time, secret_key_b64, payload)
                 self.assertEqual(resp["ErrCode"], 0)
 
-    def test_query_transaction_logs_succ(self):
+    def test_query_txn_logs_with_endpoint_succ(self):
         response = {
             "ErrCode":0,
             "ErrMessage":"",
@@ -889,10 +889,10 @@ class TransactionTest(unittest.TestCase):
         with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
             with mock.patch('requests.get', mock_do_get):
                 tc = Transaction("http://127.0.0.1:9143", "pWEzB4yMM1518346407", "")
-                _, resp = tc.query_transaction_logs({}, "in", "endpoint001")
+                _, resp = tc.query_txn_logs_with_endpoint({}, "in", "endpoint001")
                 self.assertEqual(resp["ErrCode"], 0)
 
-    def test_query_transaction_logs_err(self):
+    def test_query_txn_logs_with_endpoint_err(self):
         response = {
             "Method":"",
             "ErrCode":107,
@@ -906,5 +906,40 @@ class TransactionTest(unittest.TestCase):
         with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
             with mock.patch('requests.get', mock_do_get):
                 tc = Transaction("http://127.0.0.1:9143", "pWEzB4yMM1518346407", "")
-                _, resp = tc.query_transaction_logs({}, "in", "endpoint001")
+                _, resp = tc.query_txn_logs_with_endpoint({}, "in", "endpoint001")
                 self.assertEqual(resp["ErrCode"], 107)
+
+    def test_query_txn_logs_with_id_succ(self):
+        response = {
+            "ErrCode":0,
+            "ErrMessage":"",
+            "Method":"",
+            "Payload":"payload string"
+            }
+        server_cipher = "server cipher"
+        mock_do_get = mock.Mock(return_value=Response(200, server_cipher))
+        mock_run_cmd = mock.Mock(return_value=json.dumps(response))
+
+        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
+            with mock.patch('requests.get', mock_do_get):
+                tc = Transaction("http://127.0.0.1:9143", "pWEzB4yMM1518346407", "")
+                _, resp = tc.query_txn_logs_with_id({}, "in", "yourID")
+                self.assertEqual(resp["ErrCode"], 0)
+
+    def test_query_txn_logs_with_id_err(self):
+        response = {
+            "Method":"",
+            "ErrCode":107,
+            "ErrMessage":"illegal base64 data at input byte 8",
+            "Payload":None
+            }
+        server_cipher = "server cipher"
+        mock_do_get = mock.Mock(return_value=Response(401, server_cipher))
+        mock_run_cmd = mock.Mock(return_value=json.dumps(response))
+
+        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
+            with mock.patch('requests.get', mock_do_get):
+                tc = Transaction("http://127.0.0.1:9143", "pWEzB4yMM1518346407", "")
+                _, resp = tc.query_txn_logs_with_id({}, "in", "yourID")
+                self.assertEqual(resp["ErrCode"], 107)
+
