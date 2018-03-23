@@ -215,6 +215,7 @@ class POEClient(object):
                 url=req_url,
                 files=files
                 ).prepare()
+
         header = self.__set_header(header)
         header.update(prepared.headers)
         prepared.headers = header
