@@ -73,14 +73,14 @@ as follows:
 ...     "id": "",
 ...     "type": "Organization",
 ...     "access": "username001",
-...     "secret": "User001Pass",
+...     "secret": "User001Pass", ##8-16 characters including upper case, lower case and digits
 ...     "public_key":  {
 ...         "usage": "",
 ...         "key_type": "",
 ...         "public_key_data": ""
 ...     }
 ... }
->>> resp = wallet.register(header, body)
+>>> _, resp = wallet.register(header, body)
 >>> print resp
 ```
 
@@ -95,7 +95,7 @@ After creation wallet account, you can create POE asset for this account as foll
 >>> from api.poe import POEClient
 >>> poe = POEClient(url, apikey, cert_path)
 >>> creator = "wallet ID"
->>> created = 123456 ## timestamp when poe is created
+>>> created = "123456" ## timestamp when poe is created
 >>> privateB64 = "base64 formatted private key"
 >>> payload = {
 ...     "id": "",
@@ -116,7 +116,7 @@ After creation wallet account, you can create POE asset for this account as foll
 ...     "privateB64": privateB64,
 ...     "payload": payload
 ...     }
->>> resp = poe.create_with_sign(**params)
+>>> _, resp = poe.create_with_sign(**params)
 >>> print resp
 ```
 
@@ -133,7 +133,7 @@ After creation POE, you can upload POE file for this account as follows:
 ```python
 >>> filename = "file path"
 >>> poeid = "poeid"
->>> resp = poe.upload({}, filename, poeid)
+>>> _, resp = poe.upload({}, filename, poeid)
 >>> print resp
 ```
 
@@ -175,7 +175,7 @@ token as follows:
 ...     "privateB64": privateB64,
 ...     "payload": payload
 ...     }
->>> resp = txn.issue_colored_token_with_sign(**params)
+>>> _, resp = txn.issue_colored_token_with_sign(**params)
 ```
 
 * At issuing colored token, you need to specify an issuer(one wallet account ID),
@@ -217,7 +217,7 @@ colored tokens, and can transfer some of them to other wallet account.
 ...     "privateB64": privateB64,
 ...     "payload": payload
 ...     }
->>> resp = txn.transfer_assets_with_sign(**params)
+>>> _, resp = txn.transfer_assets_with_sign(**params)
 >>> print resp
 ```
 
