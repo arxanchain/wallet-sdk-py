@@ -103,11 +103,11 @@ After creation wallet account, you can create POE asset for this account as foll
 ...     "parent_id": "parent-poe-id",
 ...     "owner": "owner did",
 ...     "hash": "metadata-hash",
-...     "metadata": {
+...     "metadata": '{
 ...         "address": "xxx",
 ...         "telephone": "xxx",
 ...         ...
-...     }
+...     }'
 ... }
 >>> params = {
 ...     "header": {},
@@ -228,7 +228,7 @@ account as follows:
 
 ```python
 >>> id_ = "wallet id"
->>> resp = wallet.query_wallet_balance({}, id_)
+>>> _, resp = wallet.query_wallet_balance({}, id_)
 >>> print resp
 ```
 
@@ -274,12 +274,12 @@ One blockchain transaction event sample as follows:
     "is_invalid":false,
     "payload":{
         "id":"4debe20b-ca00-49b0-9130-026a1aefcf2d",
-        "metadata":{
+        "metadata": '{
             "member_id_value":"3714811988020512",
             "member_mobile":"6666",
             "member_name":"8777896121269017",
             "member_truename":"Tony"
-        }
+        }'
     }
 }
 ```
@@ -287,3 +287,15 @@ One blockchain transaction event sample as follows:
 If you want to switch to synchronous invoking mode, set 'Bc-Invoke-Mode' header
 to 'sync' value. In synchronous mode, it will not return until the blockchain
 transaction is confirmed.
+
+```python
+>>> header = {
+...     "Bc-Invoke-Mode": "sync"
+... }
+>>> body = {
+...     ...
+...     }
+... }
+>>> _, resp = wallet.register(header, body)
+>>> print resp
+```
