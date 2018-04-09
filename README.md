@@ -3,8 +3,8 @@
 [![Build Status](https://travis-ci.org/arxanchain/wallet-sdk-py.svg?branch=master)](https://travis-ci.org/arxanchain/wallet-sdk-py)
 
 ## wallet-sdk-python
-Blockchain Wallet SDK includes APIs for the management of wallet accounts(DID),
-digital assets(POE), colored tokens etc.
+Blockchain Wallet SDK includes APIs for managing wallet accounts(Decentralized Identifiers, DID),
+digital assets(Proof of Existence, POE), colored tokens etc.
 
 You need not care about how the backend blockchain runs or the unintelligible
 techniques, such as consensus, endorsement and decentralization. Simply use
@@ -13,11 +13,11 @@ tagging, compressing, encrypting and high availability.
 
 ## Contributions
 
-Welcome for any kind of contributions, such as open issues, fix bugs and improve documentation
+We appreciate all kinds of contributions, such as opening issues, fixing bugs and improving documentation.
 
 ## Install
 
-The following command will install wallet-sdk-py in your python environment
+The following command will install wallet-sdk-py in your python environment.
 
 ```sh
 $ pip install -r requirements.txt # install requirements
@@ -26,9 +26,9 @@ $ python setup.py install # install wallet-sdk-py
 
 ## Usage
 
-**Note:** Before using the wallet-sdk-python in your operating system, 
-you need to configure your installed py-common package,
-for more details please refer to [usage of py-common](https://github.com/arxanchain/py-common#usage)
+**Note:** Before using the wallet-sdk-python in your application, 
+you need to configure your installed py-common package.
+For more details please refer to [the usage of py-common](https://github.com/arxanchain/py-common#usage)
 
 ### Run unit test
 
@@ -39,7 +39,7 @@ $ pytest
 ```
 
 ### Wallet Platform API
-Details of Wallet APIs please refer to 
+For details of Wallet APIs please refer to 
 [Wallet APIs Documentation](http://www.arxanfintech.com/infocenter/html/development/wallet.html#wallet-platform-ref)
 
 ### Register a Wallet Client
@@ -58,13 +58,13 @@ To invoke the SDK API, you first have to create a wallet client as follows:
 ...     )
 ```
 
-* At building the client configuration, the **url** and **apikey** fields must
+* When building the client configuration, the **url** and **apikey** fields must
 be set. The **url** is set to the http address of wasabi service, and the
 **apikey** is set to the API access key applied on `ChainConsole` management page.
 
 ### Register wallet account
 
-After creating wallet client, you can use this client to register wallet account
+After creating the wallet client, you can use it to register a wallet account
 as follows:
 
 ```python
@@ -84,12 +84,12 @@ as follows:
 >>> print resp
 ```
 
-* `Callback-Url` in http header is optional. If you want to receive blockchain transaction
-event, you need to set `Callback-Url` in header; if not, you don't have to set it.
+* `Callback-Url` in the http header is optional. Set it only if you want to receive
+events.
 
 ### Create POE digital asset
 
-After creation wallet account, you can create POE asset for this account as follows:
+After creating the wallet account, you can create POE assets with this account as follows:
 
 ```python
 >>> from api.poe import POEClient
@@ -120,15 +120,15 @@ After creation wallet account, you can create POE asset for this account as foll
 >>> print resp
 ```
 
-* At creating POE asset, the **name** and **owner** fields must be set, and the
-**owner** field must be set to the wallet account ID.
+* When creating a POE asset, the **name** and **owner** fields must be set, with
+**owner** being the wallet account ID.
 
-* At building the signature parameter, using the ed25519 private key returned
-by regiser wallet API to do ed25519 signature.
+* When building the signature parameter `privateB64`, use the Base64 encoded
+ED25519 private key returned by [the regisering API](https://github.com/arxanchain/wallet-sdk-py#register-a-wallet-client).
 
 ### Upload POE file
 
-After creation POE, you can upload POE file for this account as follows:
+After creating POE, you can upload the POE file for this account as follows:
 
 ```python
 >>> filename = "file path"
@@ -137,13 +137,13 @@ After creation POE, you can upload POE file for this account as follows:
 >>> print resp
 ```
 
-* `upload` API uploads the file to **Offchain** storage, and generates SHA256
-hash value for this file, then saves this hash value into blockchain.
+* The `upload` API uploads the file to **Offchain** storage, generates an SHA256
+hash value, and saves this hash value into blockchain.
 
 ### Issue colored token using digital asset
 
-Once you have specified asset, you can use this specified asset to issue colored
-token as follows:
+Once you have possessed an asset, you can use this specific asset to issue colored
+tokens as follows:
 
 ```python
 >>> from api.transaction import Transaction
@@ -178,14 +178,13 @@ token as follows:
 >>> _, resp = txn.issue_colored_token_with_sign(**params)
 ```
 
-* At issuing colored token, you need to specify an issuer(one wallet account ID),
-an asset to be used to issue token, and the owner(another wallet account ID) who
-has the asset.
+* When issuing colored tokens, you need to specify an issuer(a wallet account ID),
+an asset to issue tokens, and the owner(another wallet account ID).
 
 ### Transfer colored tokens
 
-After issuing colored token, the asset owner's wallet account will have these
-colored tokens, and can transfer some of them to other wallet account.
+After issuing colored tokens, the asset owner's wallet account will have these
+tokens, and can transfer some of them to other wallet accounts.
 
 ```python
 >>> payload = {
@@ -232,13 +231,12 @@ account as follows:
 >>> print resp
 ```
 
-### Using callback URL to receive blockchain transaction event
-Each of the APIs for invoking blockchain has two invoking modes, one is `sync`
-mode, the other is `async` mode.
+### Use callback URL to receive blockchain transaction events
+Each of the APIs to invoke blockchain has two invoking modes: - `sync` and `async`.
 
 The default invoking mode is asynchronous, it will return without waiting for
 blockchain transaction confirmation. In asynchronous mode, you should set
-'Callback-Url' in http header used to receive blockchain transaction event.
+'Callback-Url' in the http header to receive blockchain transaction events.
 
 The blockchain transaction event structure is defined as follows:
 
@@ -258,7 +256,7 @@ type BcTxEventPayload struct {
 }
 ```
 
-One blockchain transaction event sample as follows:
+A blockchain transaction event sample as follows:
 
 ```code
 {
@@ -284,8 +282,8 @@ One blockchain transaction event sample as follows:
 }
 ```
 
-If you want to switch to synchronous invoking mode, set 'Bc-Invoke-Mode' header
-to 'sync' value. In synchronous mode, it will not return until the blockchain
+If you want to switch to synchronous invoking mode, set the 'Bc-Invoke-Mode' header
+to 'sync'. In synchronous mode, it will not return until the blockchain
 transaction is confirmed.
 
 ```python
