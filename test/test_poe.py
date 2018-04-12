@@ -362,3 +362,42 @@ class POETest(unittest.TestCase):
                 tc = POEClient("http://127.0.0.1:9143", "pWEzB4yMM1518346407", "")
                 _, resp = tc.query({}, fromdid)
                 self.assertEqual(resp["ErrCode"], 107)
+
+    def test_upload_succ(self):
+        response = {
+            "ErrCode":0,
+            "ErrMessage":"",
+            "Method":"",
+            "Payload":"payload string"
+            }
+        
+        server_cipher = "server cipher"
+        mock_send = mock.Mock(return_value=Response(200, response))
+        mock_run_cmd = mock.Mock(side_effect=[server_cipher, json.dumps(response)])
+
+        with mock.patch('requests.Session.send', mock_send):
+            with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
+                tc = POEClient("http://127.0.0.1:9143", "pWEzB4yMM1518346407", "")
+                file_ = "{}/requirements.txt".format(os.getcwd())
+                poeid = "poe id"
+                _, resp = tc.upload({}, file_, poeid)
+                self.assertEqual(resp["ErrCode"], 0)
+
+    def test_upload_err(self):
+        response = {
+            "Method":"",
+            "ErrCode":107,
+            "ErrMessage":"illegal base64 data at input byte 8",
+            "Payload":None
+            }
+        
+        server_cipher = "server cipher"
+        mock_send = mock.Mock(return_value=Response(200, response))
+        mock_run_cmd = mock.Mock(side_effect=[server_cipher, json.dumps(response)])
+
+        with mock.patch('requests.Session.send', mock_send):
+            with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
+                tc = POEClient("http://127.0.0.1:9143", "pWEzB4yMM1518346407", "")
+                file_ = "{}/requirements.txt".format(os.getcwd())
+                poeid = "poe id"
+                _, resp = tc.upload({}, file_, poeid)
