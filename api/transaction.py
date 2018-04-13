@@ -15,14 +15,14 @@ limitations under the License.
 """
 
 import json
-from rest.api.api import do_post, do_request, do_get
+from rest.api.api import do_post, do_get
 from common import VERSION, APIKEYHEADER, \
     FABIOROUTETAGHEADER, ROUTETAG, build_signature_body
 
 class Transaction(object):
     """A transaction client implementation."""
 
-    def __init__(self, url, api_key, cert_path):
+    def __init__(self, url, cert_store):
         """Init transaction client with url, api_key, signing_key.
 
         :param url: request url
@@ -34,14 +34,13 @@ class Transaction(object):
         self.__route_tag = "wallet-ng"
         self.__path = "transaction"
         self.__url = url
-        self.__api_key = api_key
-        self.__cert_path = cert_path
+        self.__cert_store = cert_store
 
     def __set_header(self, header):
         """Set wallet client header"""
 
         if APIKEYHEADER not in header:
-            header[APIKEYHEADER] = self.__api_key
+            header[APIKEYHEADER] = self.__cert_store.get_apikey()
         if ROUTETAG not in header:
             header[ROUTETAG] = self.__route_tag
         if FABIOROUTETAGHEADER not in header:
@@ -87,10 +86,8 @@ class Transaction(object):
                 req_path,
                 body=body
                 )
-        return do_request(
+        return self.__cert_store.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -117,10 +114,8 @@ class Transaction(object):
                 req_path,
                 body=body
                 )
-        return do_request(
+        return self.__cert_store.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -134,10 +129,8 @@ class Transaction(object):
                 req_path,
                 body=body
                 )
-        return do_request(
+        return self.__cert_store.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -164,10 +157,8 @@ class Transaction(object):
                 req_path,
                 body=body
                 )
-        return do_request(
+        return self.__cert_store.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -181,10 +172,8 @@ class Transaction(object):
                 req_path, 
                 body=body
                 )
-        return do_request(
+        return self.__cert_store.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -211,10 +200,8 @@ class Transaction(object):
                 req_path, 
                 body=body
                 )
-        return do_request(
+        return self.__cert_store.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -228,10 +215,8 @@ class Transaction(object):
                 req_path, 
                 body=body
                 )
-        return do_request(
+        return self.__cert_store.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -258,10 +243,8 @@ class Transaction(object):
                 req_path,
                 body=body
                 )
-        return do_request(
+        return self.__cert_store.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -275,10 +258,8 @@ class Transaction(object):
                 req_path, 
                 body=body
                 )
-        return do_request(
+        return self.__cert_store.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -305,10 +286,8 @@ class Transaction(object):
                 req_path,
                 body=body
                 )
-        return do_request(
+        return self.__cert_store.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -327,10 +306,8 @@ class Transaction(object):
             req_path, 
             params
             )
-        return do_request(
+        return self.__cert_store.do_request(
             req_params,
-            self.__api_key,
-            self.__cert_path,
             method
             )
 
@@ -349,9 +326,7 @@ class Transaction(object):
             req_path, 
             params
             )
-        return do_request(
+        return self.__cert_store.do_request(
             req_params,
-            self.__api_key,
-            self.__cert_path,
             method
             )

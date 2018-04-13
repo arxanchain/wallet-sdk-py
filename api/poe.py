@@ -16,28 +16,26 @@ limitations under the License.
 
 import json
 import requests
-from rest.api.api import do_post, do_request, \
-        do_put, do_get, do_prepare
+from rest.api.api import do_post, do_put, do_get
 from common import VERSION, APIKEYHEADER, \
         FABIOROUTETAGHEADER, ROUTETAG, build_signature_body
 
 class POEClient(object):
     """A POE client."""
 
-    def __init__(self, url, api_key, cert_path):
+    def __init__(self, url, cert_store):
         """Init POE client with url, api key and crypto lib. """
 
         self.__route_tag = "wallet-ng"
         self.__path = "poe"
         self.__url = url
-        self.__api_key = api_key
-        self.__cert_path = cert_path
+        self.__cert_store = cert_store
 
     def __set_header(self, header):
         """Set wallet client header"""
 
         if APIKEYHEADER not in header:
-            header[APIKEYHEADER] = self.__api_key
+            header[APIKEYHEADER] = self.__cert_store.get_apikey()
         if ROUTETAG not in header:
             header[ROUTETAG] = self.__route_tag
         if FABIOROUTETAGHEADER not in header:
@@ -87,10 +85,8 @@ class POEClient(object):
                 req_path, 
                 body=body
                 )
-        return do_request(
+        return self.__cert_store.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method,
                 )
 
@@ -118,10 +114,8 @@ class POEClient(object):
                 req_path,
                 body=body
                 )
-        return do_request(
+        return self.__cert_store.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method,
                 )
 
@@ -135,10 +129,8 @@ class POEClient(object):
                 req_path,
                 body=body
                 )
-        return do_request(
+        return self.__cert_store.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method,
                 )
 
@@ -166,10 +158,8 @@ class POEClient(object):
                 req_path,
                 body=body
                 )
-        return do_request(
+        return self.__cert_store.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method,
                 )
 
@@ -183,10 +173,8 @@ class POEClient(object):
                 "",
                 url_params=params
                 )
-        return do_request(
+        return self.__cert_store.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method,
                 )
 
@@ -220,9 +208,5 @@ class POEClient(object):
         header.update(prepared.headers)
         prepared.headers = header
 
-        return do_prepare(
-                prepared,
-                self.__api_key,
-                self.__cert_path,
-                )
+        return self.__cert_store.do_prepare(prepared)
 
