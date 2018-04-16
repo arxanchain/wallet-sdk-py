@@ -23,7 +23,7 @@ ROOT_PATH = os.path.join(
     )
 sys.path.append(ROOT_PATH)
 from api.transaction import Transaction
-from rest.api.api import CertStore
+from rest.api.api import Config
 
 class Response(object):
     def __init__(self, status_code, text):
@@ -79,11 +79,12 @@ payload = {
 }
 sig_cipher = "signed cipher"
 
-cert_store = CertStore(
+cert_store = Config(
         APIKEY,
-        cert_path
+        cert_path,
+        url
         )
-tc = Transaction(url, cert_store)
+tc = Transaction(cert_store)
 client_cipher = "client cipher"
 server_cipher = "server cipher"
 

@@ -25,7 +25,7 @@ ROOTPATH = os.path.join(
     )
 sys.path.append(ROOTPATH)
 from api.wallet import WalletClient
-from rest.api.api import CertStore
+from rest.api.api import Config
 
 class Response(object):
     def __init__(self, status_code, text):
@@ -37,9 +37,10 @@ server_cipher = "server cipher"
 IP = "http://127.0.0.1:9143"
 APIKEY = "pWEzB4yMM1518346407"
 cert_path = "/your/cert/path"
-cert_store = CertStore(
+cert_store = Config(
         APIKEY,
-        cert_path
+        cert_path,
+        IP
         )
 response_succ = {
     "ErrCode":0,
@@ -68,10 +69,7 @@ class WalletTest(unittest.TestCase):
 
         with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
             with mock.patch('requests.post', mock_do_post):
-                wc = WalletClient(
-                        IP,
-                        cert_store
-                        )
+                wc = WalletClient(cert_store)
                 body={
                     "id": "did:axn:21tDAKCERh95uGgKbJNHYp",
                     "type": "Organization",
@@ -94,7 +92,6 @@ class WalletTest(unittest.TestCase):
         with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
             with mock.patch('requests.post', mock_do_post):
                 wc = WalletClient(
-                        IP,
                         cert_store
                         )
                 body={
@@ -119,7 +116,6 @@ class WalletTest(unittest.TestCase):
         with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
             with mock.patch('requests.post', mock_do_post):
                 wc = WalletClient(
-                        IP,
                         cert_store
                         )
                 body={
@@ -144,7 +140,6 @@ class WalletTest(unittest.TestCase):
         with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
             with mock.patch('requests.post', mock_do_post):
                 wc = WalletClient(
-                        IP,
                         cert_store
                         )
                 body={
@@ -170,7 +165,6 @@ class WalletTest(unittest.TestCase):
         with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
             with mock.patch('requests.get', mock_do_get):
                 wc = WalletClient(
-                        IP,
                         cert_store
                         )
                 id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
@@ -186,7 +180,6 @@ class WalletTest(unittest.TestCase):
         with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
             with mock.patch('requests.get', mock_do_get):
                 wc = WalletClient(
-                        IP,
                         cert_store
                         )
                 id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
@@ -202,7 +195,6 @@ class WalletTest(unittest.TestCase):
         with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
             with mock.patch('requests.get', mock_do_get):
                 wc = WalletClient(
-                        IP,
                         cert_store
                         )
                 id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
@@ -218,7 +210,6 @@ class WalletTest(unittest.TestCase):
         with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
             with mock.patch('requests.get', mock_do_get):
                 wc = WalletClient(
-                        IP,
                         cert_store
                         )
                 id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
