@@ -42,19 +42,23 @@ $ pytest
 For details of Wallet APIs please refer to 
 [Wallet APIs Documentation](http://www.arxanfintech.com/infocenter/html/development/wallet.html#wallet-platform-ref)
 
-### Register a Cert Store
-A cert store is used to wrap all the encryption/decryption details, any API that visits via
-the BAAS service need to use this object, you can reguster a cert store as follows:
+### Init a Config
+A config is used to wrap all the encryption/decryption details, any API that visits via
+the BAAS service need to use this object, you can register a config object as follows:
 
 ```python
->>> from rest.api.api import CertStore
+>>> from rest.api.api import Config
 >>> apikey = "pWEzB4yMM1518346407"
 >>> cert_path = "/usr/local/lib/python2.7/site-packages/py_common-1.5.0-py2.7.egg/cryption/ecc/certs"
->>> cert_store = CertStore(apikey, cert_path) ## If you wanna visit the BAAS service bypass the wasabi service, you need to add param enable_crypto=False
+>>> ip_addr = "http://127.0.0.1:9143"
+>>> config = Config(apikey, cert_path, ip_addr)
 ```
 
 Param **apikey** is set to the API access key applied on `ChainConsole` management page,
-and param **cert_path** is the path of your private key file and tls certificate.
+param **cert_path** is the path of your private key file and tls certificate,
+and **ip_addr** is the IP address of the BAAS server entrance. 
+If you want to visit the BAAS service bypass the wasabi service,
+you need to add param enable_crypto=False.
 
 ### Register a Wallet Client
 
@@ -62,15 +66,11 @@ To invoke the SDK API, you first have to create a wallet client as follows:
 
 ```python
 >>> from api.wallet import WalletClient
->>> url = "http://127.0.0.1:9143"
->>> wallet = WalletClient(
-...     url,
-...     cert_store
-...     )
+>>> wallet = WalletClient(config)
 ```
 
-* When building the client configuration, the **url** and **cert_store** fields must
-be set. The **url** is set to the http address of wasabi service.
+* When building the client configuration, **config** fields must
+be set.
 
 ### Register wallet account
 
@@ -103,7 +103,7 @@ After creating the wallet account, you can create POE assets with this account a
 
 ```python
 >>> from api.poe import POEClient
->>> poe = POEClient(url, cert_store)
+>>> poe = POEClient(config)
 >>> creator = "wallet ID"
 >>> created = "123456" ## timestamp when poe is created
 >>> privateB64 = "base64 formatted private key"
@@ -157,7 +157,7 @@ tokens as follows:
 
 ```python
 >>> from api.transaction import Transaction
->>> txn = Transaction(url, cert_store)
+>>> txn = Transaction(config)
 >>> creator = "creator"
 >>> created = 12345
 >>> privateB64 = "base64 formatted private key"
