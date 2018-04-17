@@ -15,33 +15,25 @@ limitations under the License.
 """
 
 import json
-from rest.api.api import do_post, do_request, do_get
 from common import VERSION, APIKEYHEADER, \
     FABIOROUTETAGHEADER, ROUTETAG, build_signature_body
 
 class Transaction(object):
     """A transaction client implementation."""
 
-    def __init__(self, url, api_key, cert_path):
-        """Init transaction client with url, api_key, signing_key.
-
-        :param url: request url
-        :param apikey: api key generated from server
-        :param nonce: nonce
-        :param did: did
+    def __init__(self, config):
+        """Init transaction client with Config.
         """
 
         self.__route_tag = "wallet-ng"
         self.__path = "transaction"
-        self.__url = url
-        self.__api_key = api_key
-        self.__cert_path = cert_path
+        self.__config= config 
 
     def __set_header(self, header):
         """Set wallet client header"""
 
         if APIKEYHEADER not in header:
-            header[APIKEYHEADER] = self.__api_key
+            header[APIKEYHEADER] = self.__config.get_apikey()
         if ROUTETAG not in header:
             header[ROUTETAG] = self.__route_tag
         if FABIOROUTETAGHEADER not in header:
@@ -53,14 +45,14 @@ class Transaction(object):
         header = self.__set_header(header)
         if req_path:
             request_url = "/".join([
-                    self.__url,
+                    self.__config.get_ip(),
                     VERSION,
                     self.__path,
                     req_path 
                     ])
         else:
             request_url = "/".join([
-                    self.__url,
+                    self.__config.get_ip(),
                     VERSION,
                     self.__path,
                     ])
@@ -70,8 +62,8 @@ class Transaction(object):
                     for x in url_params)
             request_url = "?".join([request_url, params])
 
+        self.__config.set_url(request_url)
         req_params = {
-                "url": request_url,
                 "body": body,
                 "headers": header
                 }
@@ -81,16 +73,14 @@ class Transaction(object):
         """Transfer assets."""
 
         req_path = "assets/transfer"
-        method = do_post
+        method = self.__config.do_post
         req_params = self.__set_params(
                 header,
                 req_path,
                 body=body
                 )
-        return do_request(
+        return self.__config.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -100,7 +90,7 @@ class Transaction(object):
 
         payload = json.dumps(payload)
         req_path = "assets/transfer"
-        method = do_post
+        method = self.__config.do_post
         signature = build_signature_body(
                 creator,
                 created,
@@ -117,10 +107,8 @@ class Transaction(object):
                 req_path,
                 body=body
                 )
-        return do_request(
+        return self.__config.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -128,16 +116,14 @@ class Transaction(object):
         """Transfer colored token. """
 
         req_path= "tokens/transfer"
-        method = do_post
+        method = self.__config.do_post
         req_params = self.__set_params(
                 header,
                 req_path,
                 body=body
                 )
-        return do_request(
+        return self.__config.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -147,7 +133,7 @@ class Transaction(object):
 
         payload = json.dumps(payload)
         req_path= "tokens/transfer"
-        method = do_post
+        method = self.__config.do_post
         signature = build_signature_body(
                 creator,
                 created,
@@ -164,10 +150,8 @@ class Transaction(object):
                 req_path,
                 body=body
                 )
-        return do_request(
+        return self.__config.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -175,16 +159,14 @@ class Transaction(object):
         """Issue colored token. """
 
         req_path = "tokens/issue"
-        method = do_post
+        method = self.__config.do_post
         req_params = self.__set_params(
                 header,
                 req_path, 
                 body=body
                 )
-        return do_request(
+        return self.__config.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -194,7 +176,7 @@ class Transaction(object):
 
         payload = json.dumps(payload)
         req_path = "tokens/issue"
-        method = do_post
+        method = self.__config.do_post
         signature = build_signature_body(
                 creator,
                 created,
@@ -211,10 +193,8 @@ class Transaction(object):
                 req_path, 
                 body=body
                 )
-        return do_request(
+        return self.__config.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -222,16 +202,14 @@ class Transaction(object):
         """Issue asset. """
 
         req_path= "assets/issue"
-        method = do_post
+        method = self.__config.do_post
         req_params = self.__set_params(
                 header,
                 req_path, 
                 body=body
                 )
-        return do_request(
+        return self.__config.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -241,7 +219,7 @@ class Transaction(object):
 
         payload = json.dumps(payload)
         req_path= "assets/issue"
-        method = do_post
+        method = self.__config.do_post
         signature = build_signature_body(
                 creator,
                 created,
@@ -258,10 +236,8 @@ class Transaction(object):
                 req_path,
                 body=body
                 )
-        return do_request(
+        return self.__config.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -269,16 +245,14 @@ class Transaction(object):
         """Withdraw colored token. """
 
         req_path = "tokens/withdraw"
-        method = do_post
+        method = self.__config.do_post
         req_params = self.__set_params(
                 header,
                 req_path, 
                 body=body
                 )
-        return do_request(
+        return self.__config.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -288,7 +262,7 @@ class Transaction(object):
 
         payload = json.dumps(payload)
         req_path = "tokens/withdraw"
-        method = do_post
+        method = self.__config.do_post
         signature = build_signature_body(
                 creator,
                 created,
@@ -305,10 +279,8 @@ class Transaction(object):
                 req_path,
                 body=body
                 )
-        return do_request(
+        return self.__config.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method
                 )
 
@@ -316,7 +288,7 @@ class Transaction(object):
         """Query transactions logs. """
 
         req_path = "logs"
-        method = do_get
+        method = self.__config.do_get
         params = {
                 "type": type_,
                 "endpoin": endpoint
@@ -327,10 +299,8 @@ class Transaction(object):
             req_path, 
             params
             )
-        return do_request(
+        return self.__config.do_request(
             req_params,
-            self.__api_key,
-            self.__cert_path,
             method
             )
 
@@ -338,7 +308,7 @@ class Transaction(object):
         """Query transactions logs with param id. """
 
         req_path = "logs"
-        method = do_get
+        method = self.__config.do_get
         params = {
                 "type": type_,
                 "id": id_
@@ -349,9 +319,7 @@ class Transaction(object):
             req_path, 
             params
             )
-        return do_request(
+        return self.__config.do_request(
             req_params,
-            self.__api_key,
-            self.__cert_path,
             method
             )

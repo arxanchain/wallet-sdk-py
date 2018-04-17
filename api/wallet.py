@@ -14,28 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from rest.api.api import do_post, do_put, \
-    do_get, do_request
 from common import VERSION, APIKEYHEADER, \
     FABIOROUTETAGHEADER, ROUTETAG
 
 class WalletClient(object):
     """A wallet client implementation."""
 
-    def __init__(self, url, api_key, cert_path):
-        """Init wallet client with url, api key and crypto lib. """
+    def __init__(self, config):
+        """Init wallet client with crypto lib. """
 
         self.__route_tag = "wallet-ng"
         self.__path = "wallet"
-        self.__url = url
-        self.__api_key = api_key
-        self.__cert_path = cert_path
+        self.__config = config
 
     def __set_header(self, header):
         """Set wallet client header"""
 
         if APIKEYHEADER not in header:
-            header[APIKEYHEADER] = self.__api_key
+            header[APIKEYHEADER] = self.__config.get_apikey()
 
         if ROUTETAG not in header:
             header[ROUTETAG] = self.__route_tag
@@ -49,7 +45,7 @@ class WalletClient(object):
         header = self.__set_header(header)
         if req_path:
             request_url = "/".join([
-                    self.__url,
+                    self.__config.get_ip(),
                     VERSION,
                     self.__path,
                     req_path
@@ -66,8 +62,8 @@ class WalletClient(object):
                     for x in url_params)
             request_url = "?".join([request_url, params])
 
+        self.__config.set_url(request_url)
         req_params = {
-                "url": request_url,
                 "body": body,
                 "headers": header
                 }
@@ -76,34 +72,30 @@ class WalletClient(object):
     def register(self, header, body):
         """Register user wallet."""
         req_dir = "register"
-        method = do_post
+        method = self.__config.do_post
 
         req_params = self.__set_params(
                 header,
                 req_dir,
                 body=body
                 )
-        return do_request(
+        return self.__config.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method,
                 )
 
     def register_sub_wallet(self, header, body):
         """Register a sub wallet."""
         req_dir = "register/subwallet"
-        method = do_post
+        method = self.__config.do_post
 
         req_params = self.__set_params(
                 header,
                 req_dir,
                 body=body
                 )
-        return do_request(
+        return self.__config.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method,
                 )
 
@@ -111,16 +103,14 @@ class WalletClient(object):
         """Update wallet password."""
 
         req_dir = "password"
-        method = do_put
+        method = self.__config.do_put
         req_params = self.__set_params(
                 header,
                 req_dir,
                 body=body
                 )
-        return do_request(
+        return self.__config.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method,
                 )
 
@@ -128,16 +118,14 @@ class WalletClient(object):
         """Create wallet payment password."""
 
         req_dir = "payment_passwd"
-        method = do_post
+        method = self.__config.do_post
         req_params = self.__set_params(
                 header,
                 req_dir,
                 body=body
                 )
-        return do_request(
+        return self.__config.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method,
                 )
 
@@ -145,16 +133,14 @@ class WalletClient(object):
         """Update payment password."""
 
         req_dir = "payment_passwd"
-        method = do_put
+        method = self.__config.do_put
         req_params = self.__set_params(
                 header,
                 req_dir,
                 body=body
                 )
-        return do_request(
+        return self.__config.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method,
                 )
 
@@ -163,12 +149,10 @@ class WalletClient(object):
 
         req_dir = "info"
         req_dir = "?".join([req_dir, "id={}".format(id_)])
-        method = do_get
+        method = self.__config.do_get
         req_params = self.__set_params(header, req_dir)
-        return do_request(
+        return self.__config.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method,
                 )
 
@@ -177,15 +161,13 @@ class WalletClient(object):
 
         req_dir = "balance"
         params = {"id": id_}
-        method = do_get
+        method = self.__config.do_get
         req_params = self.__set_params(
                 header,
                 url_params=params,
                 req_path=req_dir
                 )
-        return do_request(
+        return self.__config.do_request(
                 req_params,
-                self.__api_key,
-                self.__cert_path,
                 method,
                 )
