@@ -62,7 +62,7 @@ class Transaction(object):
                     for x in url_params)
             request_url = "?".join([request_url, params])
 
-        self.__config.set_ip(request_url)
+        self.__config.set_url(request_url)
         req_params = {
                 "body": body,
                 "headers": header

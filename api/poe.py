@@ -61,13 +61,15 @@ class POEClient(object):
                 for x in url_params)
             request_url = "?".join([request_url, params])
 
+        self.__config.set_url(request_url)
+
         return request_url
 
     def __set_params(self, header, req_path, url_params={}, body={}):
         header = self.__set_header(header)
         request_url = self.__set_url(req_path, url_params)
 
-        self.__config.set_ip(request_url)
+        self.__config.set_url(request_url)
         req_params = {
                 "body": body,
                 "headers": header
