@@ -27,7 +27,7 @@ ROOT_PATH = os.path.join(
     )
 sys.path.append(ROOT_PATH)
 from api.poe import POEClient
-from rest.api.api import Config
+from rest.api.api import Client
 
 class Response(object):
     def __init__(self, status_code, text):
@@ -58,7 +58,7 @@ payload = {
 
 sig_cipher = "signed cipher"
 server_cipher = "server cipher"
-cert_store = Config(
+cert_store = Client(
         APIKEY,
         cert_path,
         IP

@@ -25,7 +25,7 @@ ROOTPATH = os.path.join(
     )
 sys.path.append(ROOTPATH)
 from api.wallet import WalletClient
-from rest.api.api import Config
+from rest.api.api import Client
 
 class Response(object):
     def __init__(self, status_code, text):
@@ -37,7 +37,7 @@ server_cipher = "server cipher"
 IP = "http://127.0.0.1:9143"
 APIKEY = "pWEzB4yMM1518346407"
 cert_path = "/your/cert/path"
-cert_store = Config(
+cert_store = Client(
         APIKEY,
         cert_path,
         IP
