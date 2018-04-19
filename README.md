@@ -42,16 +42,16 @@ $ pytest
 For details of Wallet APIs please refer to 
 [Wallet APIs Documentation](http://www.arxanfintech.com/infocenter/html/development/wallet.html#wallet-platform-ref)
 
-### Init a Config
-A config is used to wrap all the encryption/decryption details, any API that visits via
-the BAAS service need to use this object, you can register a config object as follows:
+### Init a Client
+A client is used to wrap all the encryption/decryption details, any API that visits via
+the BAAS service need to use this object, you can register a client object as follows:
 
 ```python
->>> from rest.api.api import Config
+>>> from rest.api.api import Client
 >>> apikey = "pWEzB4yMM1518346407"
 >>> cert_path = "/usr/local/lib/python2.7/site-packages/py_common-1.5.0-py2.7.egg/cryption/ecc/certs"
 >>> ip_addr = "http://127.0.0.1:9143"
->>> config = Config(apikey, cert_path, ip_addr)
+>>> client = Client(apikey, cert_path, ip_addr)
 ```
 
 Param **apikey** is set to the API access key applied on `ChainConsole` management page,
@@ -66,10 +66,10 @@ To invoke the SDK API, you first have to create a wallet client as follows:
 
 ```python
 >>> from api.wallet import WalletClient
->>> wallet = WalletClient(config)
+>>> wallet = WalletClient(client)
 ```
 
-* When building the client configuration, **config** fields must
+* When building the wallet client configuration, **client** fields must
 be set.
 
 ### Register wallet account
@@ -103,7 +103,7 @@ After creating the wallet account, you can create POE assets with this account a
 
 ```python
 >>> from api.poe import POEClient
->>> poe = POEClient(config)
+>>> poe = POEClient(client)
 >>> creator = "wallet ID"
 >>> created = "123456" ## timestamp when poe is created
 >>> privateB64 = "base64 formatted private key"
@@ -157,7 +157,7 @@ tokens as follows:
 
 ```python
 >>> from api.transaction import Transaction
->>> txn = Transaction(config)
+>>> txn = Transaction(client)
 >>> creator = "creator"
 >>> created = 12345
 >>> privateB64 = "base64 formatted private key"
