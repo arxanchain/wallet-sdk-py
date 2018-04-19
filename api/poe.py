@@ -22,18 +22,18 @@ from common import VERSION, APIKEYHEADER, \
 class POEClient(object):
     """A POE client."""
 
-    def __init__(self, config):
-        """Init POE client with Config. """
+    def __init__(self, client):
+        """Init POE client with Client. """
 
         self.__route_tag = "wallet-ng"
         self.__path = "poe"
-        self.__config= config
+        self.__client = client
 
     def __set_header(self, header):
         """Set wallet client header"""
 
         if APIKEYHEADER not in header:
-            header[APIKEYHEADER] = self.__config.get_apikey()
+            header[APIKEYHEADER] = self.__client.get_apikey()
         if ROUTETAG not in header:
             header[ROUTETAG] = self.__route_tag
         if FABIOROUTETAGHEADER not in header:
@@ -45,14 +45,14 @@ class POEClient(object):
         request_url = ""
         if req_path:
             request_url = "/".join([
-                    self.__config.get_ip(),
+                    self.__client.get_ip(),
                     VERSION,
                     self.__path,
                     req_path
                     ])
         else:
             request_url = "/".join([
-                    self.__config.get_ip(),
+                    self.__client.get_ip(),
                     VERSION,
                     self.__path,
                     ])
@@ -61,7 +61,7 @@ class POEClient(object):
                 for x in url_params)
             request_url = "?".join([request_url, params])
 
-        self.__config.set_url(request_url)
+        self.__client.set_url(request_url)
 
         return request_url
 
@@ -69,7 +69,7 @@ class POEClient(object):
         header = self.__set_header(header)
         request_url = self.__set_url(req_path, url_params)
 
-        self.__config.set_url(request_url)
+        self.__client.set_url(request_url)
         req_params = {
                 "body": body,
                 "headers": header
@@ -80,13 +80,13 @@ class POEClient(object):
         """Create a POE."""
 
         req_path= "create"
-        method = self.__config.do_post
+        method = self.__client.do_post
         req_params = self.__set_params(
                 header,
                 req_path, 
                 body=body
                 )
-        return self.__config.do_request(
+        return self.__client.do_request(
                 req_params,
                 method,
                 )
@@ -97,7 +97,7 @@ class POEClient(object):
 
         payload = json.dumps(payload)
         req_path = "create"
-        method = self.__config.do_post
+        method = self.__client.do_post
         signature = build_signature_body(
                 creator,
                 created,
@@ -115,7 +115,7 @@ class POEClient(object):
                 req_path,
                 body=body
                 )
-        return self.__config.do_request(
+        return self.__client.do_request(
                 req_params,
                 method,
                 )
@@ -124,13 +124,13 @@ class POEClient(object):
         """Update a POE."""
 
         req_path = "update"
-        method = self.__config.do_put
+        method = self.__client.do_put
         req_params = self.__set_params(
                 header,
                 req_path,
                 body=body
                 )
-        return self.__config.do_request(
+        return self.__client.do_request(
                 req_params,
                 method,
                 )
@@ -141,7 +141,7 @@ class POEClient(object):
 
         payload = json.dumps(payload)
         req_path = "update"
-        method = self.__config.do_put
+        method = self.__client.do_put
         signature = build_signature_body(
                 creator,
                 created,
@@ -159,7 +159,7 @@ class POEClient(object):
                 req_path,
                 body=body
                 )
-        return self.__config.do_request(
+        return self.__client.do_request(
                 req_params,
                 method,
                 )
@@ -168,13 +168,13 @@ class POEClient(object):
         """Query a POE."""
 
         params= {"id": id_}
-        method = self.__config.do_get
+        method = self.__client.do_get
         req_params = self.__set_params(
                 header,
                 "",
                 url_params=params
                 )
-        return self.__config.do_request(
+        return self.__client.do_request(
                 req_params,
                 method,
                 )
@@ -209,5 +209,5 @@ class POEClient(object):
         header.update(prepared.headers)
         prepared.headers = header
 
-        return self.__config.do_prepare(prepared)
+        return self.__client.do_prepare(prepared)
 

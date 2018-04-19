@@ -21,19 +21,19 @@ from common import VERSION, APIKEYHEADER, \
 class Transaction(object):
     """A transaction client implementation."""
 
-    def __init__(self, config):
-        """Init transaction client with Config.
+    def __init__(self, client):
+        """Init transaction client with Client.
         """
 
         self.__route_tag = "wallet-ng"
         self.__path = "transaction"
-        self.__config= config 
+        self.__client = client
 
     def __set_header(self, header):
         """Set wallet client header"""
 
         if APIKEYHEADER not in header:
-            header[APIKEYHEADER] = self.__config.get_apikey()
+            header[APIKEYHEADER] = self.__client.get_apikey()
         if ROUTETAG not in header:
             header[ROUTETAG] = self.__route_tag
         if FABIOROUTETAGHEADER not in header:
@@ -45,14 +45,14 @@ class Transaction(object):
         header = self.__set_header(header)
         if req_path:
             request_url = "/".join([
-                    self.__config.get_ip(),
+                    self.__client.get_ip(),
                     VERSION,
                     self.__path,
                     req_path 
                     ])
         else:
             request_url = "/".join([
-                    self.__config.get_ip(),
+                    self.__client.get_ip(),
                     VERSION,
                     self.__path,
                     ])
@@ -62,7 +62,7 @@ class Transaction(object):
                     for x in url_params)
             request_url = "?".join([request_url, params])
 
-        self.__config.set_url(request_url)
+        self.__client.set_url(request_url)
         req_params = {
                 "body": body,
                 "headers": header
@@ -73,13 +73,13 @@ class Transaction(object):
         """Transfer assets."""
 
         req_path = "assets/transfer"
-        method = self.__config.do_post
+        method = self.__client.do_post
         req_params = self.__set_params(
                 header,
                 req_path,
                 body=body
                 )
-        return self.__config.do_request(
+        return self.__client.do_request(
                 req_params,
                 method
                 )
@@ -90,7 +90,7 @@ class Transaction(object):
 
         payload = json.dumps(payload)
         req_path = "assets/transfer"
-        method = self.__config.do_post
+        method = self.__client.do_post
         signature = build_signature_body(
                 creator,
                 created,
@@ -107,7 +107,7 @@ class Transaction(object):
                 req_path,
                 body=body
                 )
-        return self.__config.do_request(
+        return self.__client.do_request(
                 req_params,
                 method
                 )
@@ -116,13 +116,13 @@ class Transaction(object):
         """Transfer colored token. """
 
         req_path= "tokens/transfer"
-        method = self.__config.do_post
+        method = self.__client.do_post
         req_params = self.__set_params(
                 header,
                 req_path,
                 body=body
                 )
-        return self.__config.do_request(
+        return self.__client.do_request(
                 req_params,
                 method
                 )
@@ -133,7 +133,7 @@ class Transaction(object):
 
         payload = json.dumps(payload)
         req_path= "tokens/transfer"
-        method = self.__config.do_post
+        method = self.__client.do_post
         signature = build_signature_body(
                 creator,
                 created,
@@ -150,7 +150,7 @@ class Transaction(object):
                 req_path,
                 body=body
                 )
-        return self.__config.do_request(
+        return self.__client.do_request(
                 req_params,
                 method
                 )
@@ -159,13 +159,13 @@ class Transaction(object):
         """Issue colored token. """
 
         req_path = "tokens/issue"
-        method = self.__config.do_post
+        method = self.__client.do_post
         req_params = self.__set_params(
                 header,
                 req_path, 
                 body=body
                 )
-        return self.__config.do_request(
+        return self.__client.do_request(
                 req_params,
                 method
                 )
@@ -176,7 +176,7 @@ class Transaction(object):
 
         payload = json.dumps(payload)
         req_path = "tokens/issue"
-        method = self.__config.do_post
+        method = self.__client.do_post
         signature = build_signature_body(
                 creator,
                 created,
@@ -193,7 +193,7 @@ class Transaction(object):
                 req_path, 
                 body=body
                 )
-        return self.__config.do_request(
+        return self.__client.do_request(
                 req_params,
                 method
                 )
@@ -202,13 +202,13 @@ class Transaction(object):
         """Issue asset. """
 
         req_path= "assets/issue"
-        method = self.__config.do_post
+        method = self.__client.do_post
         req_params = self.__set_params(
                 header,
                 req_path, 
                 body=body
                 )
-        return self.__config.do_request(
+        return self.__client.do_request(
                 req_params,
                 method
                 )
@@ -219,7 +219,7 @@ class Transaction(object):
 
         payload = json.dumps(payload)
         req_path= "assets/issue"
-        method = self.__config.do_post
+        method = self.__client.do_post
         signature = build_signature_body(
                 creator,
                 created,
@@ -236,7 +236,7 @@ class Transaction(object):
                 req_path,
                 body=body
                 )
-        return self.__config.do_request(
+        return self.__client.do_request(
                 req_params,
                 method
                 )
@@ -245,13 +245,13 @@ class Transaction(object):
         """Withdraw colored token. """
 
         req_path = "tokens/withdraw"
-        method = self.__config.do_post
+        method = self.__client.do_post
         req_params = self.__set_params(
                 header,
                 req_path, 
                 body=body
                 )
-        return self.__config.do_request(
+        return self.__client.do_request(
                 req_params,
                 method
                 )
@@ -262,7 +262,7 @@ class Transaction(object):
 
         payload = json.dumps(payload)
         req_path = "tokens/withdraw"
-        method = self.__config.do_post
+        method = self.__client.do_post
         signature = build_signature_body(
                 creator,
                 created,
@@ -279,7 +279,7 @@ class Transaction(object):
                 req_path,
                 body=body
                 )
-        return self.__config.do_request(
+        return self.__client.do_request(
                 req_params,
                 method
                 )
@@ -288,7 +288,7 @@ class Transaction(object):
         """Query transactions logs. """
 
         req_path = "logs"
-        method = self.__config.do_get
+        method = self.__client.do_get
         params = {
                 "type": type_,
                 "endpoin": endpoint
@@ -299,7 +299,7 @@ class Transaction(object):
             req_path, 
             params
             )
-        return self.__config.do_request(
+        return self.__client.do_request(
             req_params,
             method
             )
@@ -308,7 +308,7 @@ class Transaction(object):
         """Query transactions logs with param id. """
 
         req_path = "logs"
-        method = self.__config.do_get
+        method = self.__client.do_get
         params = {
                 "type": type_,
                 "id": id_
@@ -319,7 +319,7 @@ class Transaction(object):
             req_path, 
             params
             )
-        return self.__config.do_request(
+        return self.__client.do_request(
             req_params,
             method
             )
