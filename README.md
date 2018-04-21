@@ -113,11 +113,7 @@ After creating the wallet account, you can create POE assets with this account a
 ...     "parent_id": "parent-poe-id",
 ...     "owner": "owner did",
 ...     "hash": "metadata-hash",
-...     "metadata": '{
-...         "address": "xxx",
-...         "telephone": "xxx",
-...         ...
-...     }'
+...     "metadata": map(ord, '{"address": "xxx", "telephone": "xxx", ...}')
 ... }
 >>> params = {
 ...     "header": {},
