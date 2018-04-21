@@ -13,7 +13,7 @@ setup(
     packages=find_packages(),
     platforms='any',
     install_requires=[
-        "certifi",
+        "certifi==2018.1.18",
         "chardet==3.0.4",
         "funcsigs==1.0.2",
         "idna==2.6",
@@ -23,10 +23,10 @@ setup(
         "six==1.11.0",
         "timeout-decorator==0.4.0",
         "urllib3==1.22",
-        "py-common==v1.5.1"
+        "py-common"
         ],
     dependency_links=[
-        "git+git://github.com/arxanchain/py-common.git@v1.5.1#egg=py-common-v1.5.1"
+        "git+git://github.com/arxanchain/py-common.git@master#egg=py-common"
     ],
     include_package_data=True,
     zip_safe=False,
