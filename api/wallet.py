@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from common import VERSION, APIKEYHEADER, \
-    FABIOROUTETAGHEADER, ROUTETAG
+from rest.api.common import APIKEYHEADER, FABIOROUTETAGHEADER, ROUTETAG
+from common import VERSION
 
 class WalletClient(object):
     """A wallet client implementation."""

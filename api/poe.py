@@ -16,8 +16,9 @@ limitations under the License.
 
 import json
 import requests
-from common import VERSION, APIKEYHEADER, \
-        FABIOROUTETAGHEADER, ROUTETAG, build_signature_body
+from rest.api.common import APIKEYHEADER, FABIOROUTETAGHEADER, \
+        ROUTETAG, build_signature_body
+from common import VERSION
 
 class POEClient(object):
     """A POE client."""
