@@ -20,8 +20,7 @@ We appreciate all kinds of contributions, such as opening issues, fixing bugs an
 The following command will install wallet-sdk-py in your python environment.
 
 ```sh
-$ pip install -r requirements.txt # install requirements
-$ python setup.py install # install wallet-sdk-py
+$ python setup.py install
 ```
 
 ## Usage
