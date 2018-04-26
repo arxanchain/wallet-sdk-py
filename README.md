@@ -196,20 +196,14 @@ tokens, and can transfer some of them to other wallet accounts.
 ...     "from": "from did",
 ...     "to": "to did",
 ...     "asset_id": "asset id",
-...     "coins": [
+...     "tokens": [
 ...         {
-...             "coin_id": "coin id",
+...             "token_id": "token id",
 ...             "amount": 5
 ...         }
 ...     ],
-...     "fees": {
-...         "accounts": [
-...             "account did"
-...         ],
-...         "coins": [
-...             {
-...                 "coin_id": "coin id",
-...                 "amount": 5
+...     "fee": {
+...         "amount": 5,
 ...             }
 ...         ]
 ...     }

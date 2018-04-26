@@ -56,26 +56,6 @@ coin_id = "1f38a7a1-2c79-465e-a4c0-0038e25c7edg"
 cert_path = "./cert_path"
 create_time = "1517818060"
 payload = {
-    "from": did,
-    "to": todid,
-    "asset_id": asset_id,
-    "coins": [
-    	{
-    	    "coin_id": coin_id,
-    	    "amount": 5
-    	}
-    ],
-    "fees": {
-    	"accounts": [
-    	    did
-    	],
-    	"coins": [
-    	    {
-    	    	"coin_id": coin_id,
-    	    	"amount": 5
-    	    }
-    	]
-    }
 }
 sig_cipher = "signed cipher"
 
