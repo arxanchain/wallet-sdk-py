@@ -21,12 +21,12 @@ setup(
         "pbr==3.1.1",
         "requests==2.18.4",
         "six==1.11.0",
-        "timeout-decorator==0.4.0",
+        "timeout-decorator",
         "urllib3==1.22",
         "py-common==v1.5.1"
         ],
     dependency_links=[
-        "git+git://github.com/arxanchain/py-common.git@master#egg=py-common-v1.5.1"
+        "git+git://github.com/arxanchain/py-common.git@v1.5.1#egg=py-common-v1.5.1"
     ],
     include_package_data=True,
     zip_safe=False,
