@@ -24,6 +24,7 @@ You have two ways to prepare wallet-sdk-py environment. One way you can use shel
 If you want use shell command, you need to install golang and you should've configured your GOPAH environment variable.
 
 ```sh
+$ cd scripts
 $ ./prepare.sh APIKEY, ServerCert, PrivateKey # ServerCert is TLS certificate, PrivateKey is private key from your ArxanChain BaaS Chainconsole 
 ```
 
