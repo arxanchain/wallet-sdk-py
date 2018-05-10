@@ -21,7 +21,7 @@ You have two ways to prepare wallet-sdk-py environment. One way you can use shel
 
 ### shell command
 
-If you want use shell command, you need to install golang and you should've configured your GOPAH environment variable.
+If you want use shell command, you need to install golang and you should've configured your GOPATH environment variable.
 
 ```sh
 $ cd scripts
