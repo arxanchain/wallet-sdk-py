@@ -22,10 +22,10 @@ setup(
         "requests==2.18.4",
         "six==1.11.0",
         "urllib3==1.22",
-        "py-common==v2.0"
+        "py-common"
         ],
     dependency_links=[
-        "git+git://github.com/arxanchain/py-common.git@master#egg=py-common-v2.0"
+        "git+git://github.com/arxanchain/py-common.git@master#egg=py-common"
     ],
     include_package_data=True,
     zip_safe=False,
