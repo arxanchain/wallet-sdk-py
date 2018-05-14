@@ -48,7 +48,7 @@ the BAAS service need to use this object, you can register a client object as fo
 ```python
 >>> from rest.api.api import Client
 >>> apikey = "pWEzB4yMM1518346407"
->>> cert_path = "/usr/local/lib/python2.7/site-packages/py_common-1.5.1-py2.7.egg/cryption/ecc/certs"
+>>> cert_path = "/usr/local/lib/python2.7/site-packages/py_common-2.0-py2.7.egg/cryption/ecc/certs"
 >>> ip_addr = "http://127.0.0.1:9143"
 >>> client = Client(apikey, cert_path, ip_addr)
 ```
