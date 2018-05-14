@@ -17,15 +17,26 @@ We appreciate all kinds of contributions, such as opening issues, fixing bugs an
 
 ## Install
 
+You have two ways to prepare wallet-sdk-py environment. One way you can use shell command, the other way you can step by step to install all environment.
+
+### shell command
+
+If you want use shell command, you need to install golang and you should've configured your GOPATH environment variable.
+
+```sh
+$ ./scripts/prepare.sh APIKEY, ServerCert, PrivateKey # ServerCert is TLS certificate, PrivateKey is private key from your ArxanChain BaaS Chainconsole
+```
+
+### step by step
 The following command will install wallet-sdk-py in your python environment.
 
 ```sh
 $ python setup.py install
 ```
 
-## Usage
+##### Usage
 
-**Note:** Before using the wallet-sdk-python in your application, 
+**Note:** Before using the wallet-sdk-python in your application,
 you need to configure your installed py-common package.
 For more details please refer to [the usage of py-common](https://github.com/arxanchain/py-common#usage)
 
@@ -38,7 +49,7 @@ $ pytest
 ```
 
 ### Wallet Platform API
-For details of Wallet APIs please refer to 
+For details of Wallet APIs please refer to
 [Wallet APIs Documentation](http://www.arxanfintech.com/infocenter/html/development/wallet.html#wallet-platform-ref)
 
 ### Init a Client
@@ -55,7 +66,7 @@ the BAAS service need to use this object, you can register a client object as fo
 
 Param **apikey** is set to the API access key applied on `ChainConsole` management page,
 param **cert_path** is the path of your private key file and tls certificate,
-and **ip_addr** is the IP address of the BAAS server entrance. 
+and **ip_addr** is the IP address of the BAAS server entrance.
 If you want to visit the BAAS service bypass the wasabi service,
 you need to add param enable_crypto=False.
 
