@@ -21,6 +21,7 @@ setup(
         "pbr==3.1.1",
         "requests==2.18.4",
         "six==1.11.0",
+        "timeout-decorator",
         "urllib3==1.22",
         "py-common"
         ],
