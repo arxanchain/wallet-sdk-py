@@ -188,7 +188,7 @@ class POETest(unittest.TestCase):
 
         mock_do_prepare = mock.Mock(return_value=(0, response_succ))
         with mock.patch('rest.api.api.Client.do_prepare', mock_do_prepare):
-            file_ = "{}/test_poe.py".format(os.getcwd())
+            file_ = "{}/requirements.txt".format(os.getcwd())
             poeid = "poe id"
             _, resp = tc.upload({}, file_, poeid)
             self.assertEqual(resp["ErrCode"], 0)
@@ -197,7 +197,7 @@ class POETest(unittest.TestCase):
 
         mock_do_prepare = mock.Mock(return_value=(0, response_fail))
         with mock.patch('rest.api.api.Client.do_prepare', mock_do_prepare):
-            file_ = "{}/test_poe.py".format(os.getcwd())
+            file_ = "{}/requirements.txt".format(os.getcwd())
             poeid = "poe id"
             _, resp = tc.upload({}, file_, poeid)
             self.assertEqual(resp["ErrCode"], 107)
