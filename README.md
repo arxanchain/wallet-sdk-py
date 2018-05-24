@@ -23,8 +23,10 @@ You have two ways to prepare wallet-sdk-py environment. One way you can use shel
 
 If you want use shell command, you need to install golang and you should've configured your GOPATH environment variable.
 
+*Note:* ServerCert/PrivateKey file please use absolute path. ServerCert is TLS certificate, PrivateKey is private key from your ArxanChain BaaS ChainConsole.
+
 ```sh
-$ ./scripts/prepare.sh APIKEY, ServerCert, PrivateKey # ServerCert is TLS certificate, PrivateKey is private key from your ArxanChain BaaS Chainconsole
+$ ./scripts/prepare.sh APIKEY, ServerCert, PrivateKey
 ```
 
 ### step by step
@@ -36,7 +38,7 @@ $ python setup.py install
 
 ##### Usage
 
-**Note:** Before using the wallet-sdk-python in your application,
+*Note:* Before using the wallet-sdk-python in your application,
 you need to configure your installed py-common package.
 For more details please refer to [the usage of py-common](https://github.com/arxanchain/py-common#usage)
 
