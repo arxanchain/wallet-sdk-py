@@ -32,8 +32,6 @@ class Response(object):
         self.status_code = status_code
         self.text = text
 
-client_cipher = "client cipher"
-server_cipher = "server cipher"
 IP = "http://127.0.0.1:9143"
 APIKEY = "pWEzB4yMM1518346407"
 cert_path = "/your/cert/path"
@@ -64,156 +62,136 @@ class WalletTest(unittest.TestCase):
 
     def test_register_succ(self):
         """ Test register successfully returned. """
-        mock_do_post = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[client_cipher, json.dumps(response_succ)])
 
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                wc = WalletClient(cert_store)
-                body={
-                    "id": "did:axn:21tDAKCERh95uGgKbJNHYp",
-                    "type": "Organization",
-                    "access": "xxxxx",
-                    "secret": "xxxx",
-                    "public_key":  {
-                        "usage": "SignVerify",
-                        "key_type": "EdDsaPublicKey",
-                        "public_key_data": "dGhpcyBpcyBhIHB1YmxpYyBrZXl0aGlzIGlzIGEgcHVibGljIGtleXRoaXMgaXMgYSBwdWJsaWMga2V5dGhpcyBpcyBhIHB1YmxpYyBrZXl0aGlzIGlzIGEgcHVibGljIGtleXRoaXMgaXMgYSBwdWJsaWMga2V5dGhpcyBpcyBhIHB1YmxpYyBrZXk="
-                    }
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(cert_store)
+            body={
+                "id": "did:axn:21tDAKCERh95uGgKbJNHYp",
+                "type": "Organization",
+                "access": "xxxxx",
+                "secret": "xxxx",
+                "public_key":  {
+                    "usage": "SignVerify",
+                    "key_type": "EdDsaPublicKey",
+                    "public_key_data": "dGhpcyBpcyBhIHB1YmxpYyBrZXl0aGlzIGlzIGEgcHVibGljIGtleXRoaXMgaXMgYSBwdWJsaWMga2V5dGhpcyBpcyBhIHB1YmxpYyBrZXl0aGlzIGlzIGEgcHVibGljIGtleXRoaXMgaXMgYSBwdWJsaWMga2V5dGhpcyBpcyBhIHB1YmxpYyBrZXk="
                 }
-                _, resp = wc.register({}, body)
-                self.assertEqual(resp["ErrCode"], 0)
+            }
+            _, resp = wc.register({}, body)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_register_err(self):
         """ Test register with error code. """
 
-        mock_do_post = mock.Mock(return_value=Response(400, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[client_cipher, json.dumps(response_fail)])
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                wc = WalletClient(
-                        cert_store
-                        )
-                body={
-                    "id": "did:axn:21tDAKCERh95uGgKbJNHYp",
-                    "type": "Organization",
-                    "access": "xxxxx",
-                    "secret": "xxxx",
-                    "public_key":  {
-                        "usage": "SignVerify",
-                        "key_type": "EdDsaPublicKey",
-                        "public_key_data": "dGhpcyBpcyBhIHB1YmxpYyBrZXl0aGlzIGlzIGEgcHVibGljIGtleXRoaXMgaXMgYSBwdWJsaWMga2V5dGhpcyBpcyBhIHB1YmxpYyBrZXl0aGlzIGlzIGEgcHVibGljIGtleXRoaXMgaXMgYSBwdWJsaWMga2V5dGhpcyBpcyBhIHB1YmxpYyBrZXk="
-                    }
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            body={
+                "id": "did:axn:21tDAKCERh95uGgKbJNHYp",
+                "type": "Organization",
+                "access": "xxxxx",
+                "secret": "xxxx",
+                "public_key":  {
+                    "usage": "SignVerify",
+                    "key_type": "EdDsaPublicKey",
+                    "public_key_data": "dGhpcyBpcyBhIHB1YmxpYyBrZXl0aGlzIGlzIGEgcHVibGljIGtleXRoaXMgaXMgYSBwdWJsaWMga2V5dGhpcyBpcyBhIHB1YmxpYyBrZXl0aGlzIGlzIGEgcHVibGljIGtleXRoaXMgaXMgYSBwdWJsaWMga2V5dGhpcyBpcyBhIHB1YmxpYyBrZXk="
                 }
-                _, resp = wc.register({}, body)
-                self.assertEqual(resp["ErrCode"], 107)
+            }
+            _, resp = wc.register({}, body)
+            self.assertEqual(resp["ErrCode"], 107)
 
     def test_register_sub_succ(self):
         """ Test register sub wallet successfully returned. """
 
-        mock_do_post = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[client_cipher, json.dumps(response_succ)])
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                wc = WalletClient(
-                        cert_store
-                        )
-                body={
-                    "id": "did:axn:21tDAKCERh95uGgKbJNHYp",
-                    "type": "Organization",
-                    "access": "xxxxx",
-                    "secret": "xxxx",
-                    "public_key":  {
-                        "usage": "SignVerify",
-                        "key_type": "EdDsaPublicKey",
-                        "public_key_data": "dGhpcyBpcyBhIHB1YmxpYyBrZXl0aGlzIGlzIGEgcHVibGljIGtleXRoaXMgaXMgYSBwdWJsaWMga2V5dGhpcyBpcyBhIHB1YmxpYyBrZXl0aGlzIGlzIGEgcHVibGljIGtleXRoaXMgaXMgYSBwdWJsaWMga2V5dGhpcyBpcyBhIHB1YmxpYyBrZXk="
-                    }
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            body={
+                "id": "did:axn:21tDAKCERh95uGgKbJNHYp",
+                "type": "Organization",
+                "access": "xxxxx",
+                "secret": "xxxx",
+                "public_key":  {
+                    "usage": "SignVerify",
+                    "key_type": "EdDsaPublicKey",
+                    "public_key_data": "dGhpcyBpcyBhIHB1YmxpYyBrZXl0aGlzIGlzIGEgcHVibGljIGtleXRoaXMgaXMgYSBwdWJsaWMga2V5dGhpcyBpcyBhIHB1YmxpYyBrZXl0aGlzIGlzIGEgcHVibGljIGtleXRoaXMgaXMgYSBwdWJsaWMga2V5dGhpcyBpcyBhIHB1YmxpYyBrZXk="
                 }
-                _, resp = wc.register_sub_wallet({}, body)
-                self.assertEqual(resp["ErrCode"], 0)
+            }
+            _, resp = wc.register_sub_wallet({}, body)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_register_sub_err(self):
         """ Test register sub wallet with error code. """
 
-        mock_do_post = mock.Mock(return_value=Response(400, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[client_cipher, json.dumps(response_fail)])
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                wc = WalletClient(
-                        cert_store
-                        )
-                body={
-                    "id": "did:axn:21tDAKCERh95uGgKbJNHYp",
-                    "type": "Organization",
-                    "access": "xxxxx",
-                    "secret": "xxxx",
-                    "public_key":  {
-                        "usage": "SignVerify",
-                        "key_type": "EdDsaPublicKey",
-                        "public_key_data": "dGhpcyBpcyBhIHB1YmxpYyBrZXl0aGlzIGlzIGEgcHVibGljIGtleXRoaXMgaXMgYSBwdWJsaWMga2V5dGhpcyBpcyBhIHB1YmxpYyBrZXl0aGlzIGlzIGEgcHVibGljIGtleXRoaXMgaXMgYSBwdWJsaWMga2V5dGhpcyBpcyBhIHB1YmxpYyBrZXk="
-                    }
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            body={
+                "id": "did:axn:21tDAKCERh95uGgKbJNHYp",
+                "type": "Organization",
+                "access": "xxxxx",
+                "secret": "xxxx",
+                "public_key":  {
+                    "usage": "SignVerify",
+                    "key_type": "EdDsaPublicKey",
+                    "public_key_data": "dGhpcyBpcyBhIHB1YmxpYyBrZXl0aGlzIGlzIGEgcHVibGljIGtleXRoaXMgaXMgYSBwdWJsaWMga2V5dGhpcyBpcyBhIHB1YmxpYyBrZXl0aGlzIGlzIGEgcHVibGljIGtleXRoaXMgaXMgYSBwdWJsaWMga2V5dGhpcyBpcyBhIHB1YmxpYyBrZXk="
                 }
-                _, resp = wc.register_sub_wallet({}, body)
-                self.assertEqual(resp["ErrCode"], 107)
+            }
+            _, resp = wc.register_sub_wallet({}, body)
+            self.assertEqual(resp["ErrCode"], 107)
 
     def test_query_wallet_infos_succ(self):
         """ Test query wallet infos successfully returned. """
 
-        mock_do_get = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(return_value=json.dumps(response_succ))
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.get', mock_do_get):
-                wc = WalletClient(
-                        cert_store
-                        )
-                id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
-                _, resp = wc.query_wallet_infos({}, id_)
-                self.assertEqual(resp["ErrCode"], 0)
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
+            _, resp = wc.query_wallet_infos({}, id_)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_query_wallet_infos_err(self):
         """ Test query wallet infos with error code. """
 
-        mock_do_get = mock.Mock(return_value=Response(400, server_cipher))
-        mock_run_cmd = mock.Mock(return_value=json.dumps(response_fail))
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.get', mock_do_get):
-                wc = WalletClient(
-                        cert_store
-                        )
-                id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
-                _, resp = wc.query_wallet_infos({}, id_)
-                self.assertEqual(resp["ErrCode"], 107)
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
+            _, resp = wc.query_wallet_infos({}, id_)
+            self.assertEqual(resp["ErrCode"], 107)
 
     def test_query_wallet_balance_succ(self):
         """ Test query wallet balance successfully returned. """
 
-        mock_do_get = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(return_value=json.dumps(response_succ))
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.get', mock_do_get):
-                wc = WalletClient(
-                        cert_store
-                        )
-                id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
-                _, resp = wc.query_wallet_balance({}, id_)
-                self.assertEqual(resp["ErrCode"], 0)
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
+            _, resp = wc.query_wallet_balance({}, id_)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_query_wallet_balance_err(self):
         """ Test query wallet balance with error code. """
 
-        mock_do_get = mock.Mock(return_value=Response(400, server_cipher))
-        mock_run_cmd = mock.Mock(return_value=json.dumps(response_fail))
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.get', mock_do_get):
-                wc = WalletClient(
-                        cert_store
-                        )
-                id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
-                _, resp = wc.query_wallet_balance({}, id_)
-                self.assertEqual(resp["ErrCode"], 107)
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
+            _, resp = wc.query_wallet_balance({}, id_)
+            self.assertEqual(resp["ErrCode"], 107)
 
 
