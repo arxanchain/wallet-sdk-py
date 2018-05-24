@@ -19,7 +19,6 @@ import mock
 import json
 import os
 import sys
-import cryption
 from cryption.crypto import sign
 ROOT_PATH = os.path.join(
     os.path.dirname(__file__),
@@ -56,8 +55,6 @@ payload = {
     },
 }
 
-sig_cipher = "signed cipher"
-server_cipher = "server cipher"
 cert_store = Client(
         APIKEY,
         cert_path,
@@ -87,151 +84,121 @@ class POETest(unittest.TestCase):
     def test_create_succ(self):
         """Test create a POE successfully returned. """
 
-        mock_do_post = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_succ)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-                body = {
-                    "payload": json.dumps(payload),
-                    "signature": {
-                    	"creator": did,
-                    	"created": create_time,	
-                    	"nonce": nonce,
-                    	"signature_value": signature
-                    }
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
+            body = {
+                "payload": json.dumps(payload),
+                "signature": {
+                	"creator": did,
+                	"created": create_time,	
+                	"nonce": nonce,
+                	"signature_value": signature
                 }
-                _, resp = tc.create({}, body)
-                self.assertEqual(resp["ErrCode"], 0)
+            }
+            _, resp = tc.create({}, body)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_create_err(self):
         """Test create a POE with error code. """
-        sig_cipher = "signed cipher"
-
-        server_cipher = "server cipher"
-        mock_do_post = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_fail)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-                body = {
-                    "payload": json.dumps(payload),
-                    "signature": {
-                    	"creator": did,
-                    	"created": create_time,	
-                    	"nonce": nonce,
-                    	"signature_value": signature
-                    }
+ 
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
+            body = {
+                "payload": json.dumps(payload),
+                "signature": {
+                	"creator": did,
+                	"created": create_time,	
+                	"nonce": nonce,
+                	"signature_value": signature
                 }
-                _, resp = tc.create({}, body)
-                self.assertEqual(resp["ErrCode"], 107)
+            }
+            _, resp = tc.create({}, body)
+            self.assertEqual(resp["ErrCode"], 107)
 
     def test_create_with_sign_succ(self):
         """Test create POE with ed25519 signed body successfully returned. """
 
-        mock_do_post = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_succ)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                _, resp = tc.create_with_sign({}, fromdid, create_time, secret_key_b64, payload)
-                self.assertEqual(resp["ErrCode"], 0)
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            _, resp = tc.create_with_sign({}, fromdid, create_time, secret_key_b64, payload)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_update_succ(self):
         """Test update poe successfully returned. """
 
-        mock_do_put = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_succ)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.put', mock_do_put):
-                signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-                body = {
-                    "payload": json.dumps(payload),
-                    "signature": {
-                    	"creator": did,
-                    	"created": create_time,	
-                    	"nonce": nonce,
-                    	"signature_value": signature
-                    }
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
+            body = {
+                "payload": json.dumps(payload),
+                "signature": {
+                	"creator": did,
+                	"created": create_time,	
+                	"nonce": nonce,
+                	"signature_value": signature
                 }
-                _, resp = tc.update({}, body)
-                self.assertEqual(resp["ErrCode"], 0)
+            }
+            _, resp = tc.update({}, body)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_update_err(self):
         """Test update poe with error code. """
 
-        mock_do_put = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_fail)])
 
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.put', mock_do_put):
-                signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-                body = {
-                    "payload": json.dumps(payload),
-                    "signature": {
-                    	"creator": did,
-                    	"created": create_time,	
-                    	"nonce": nonce,
-                    	"signature_value": signature
-                    }
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
+            body = {
+                "payload": json.dumps(payload),
+                "signature": {
+                	"creator": did,
+                	"created": create_time,	
+                	"nonce": nonce,
+                	"signature_value": signature
                 }
-                _, resp = tc.update({}, body)
-                self.assertEqual(resp["ErrCode"], 107)
+            }
+            _, resp = tc.update({}, body)
+            self.assertEqual(resp["ErrCode"], 107)
 
     def test_update_with_sign_succ(self):
         """Test update poe with ed25519 signed body successfully returned. """
 
-        mock_do_put = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_succ)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.put', mock_do_put):
-                _, resp = tc.update_with_sign({}, fromdid, create_time, secret_key_b64, payload)
-                self.assertEqual(resp["ErrCode"], 0)
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            _, resp = tc.update_with_sign({}, fromdid, create_time, secret_key_b64, payload)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_query_succ(self):
 
-        mock_do_get = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(return_value=json.dumps(response_succ))
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.get', mock_do_get):
-                _, resp = tc.query({}, fromdid)
-                self.assertEqual(resp["ErrCode"], 0)
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            _, resp = tc.query({}, fromdid)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_query_err(self):
-        server_cipher = "server cipher"
-        mock_do_get = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(return_value=json.dumps(response_fail))
 
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.get', mock_do_get):
-                _, resp = tc.query({}, fromdid)
-                self.assertEqual(resp["ErrCode"], 107)
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            _, resp = tc.query({}, fromdid)
+            self.assertEqual(resp["ErrCode"], 107)
 
     def test_upload_succ(self):
-        server_cipher = "server cipher"
-        mock_send = mock.Mock(return_value=Response(200, response_succ))
-        mock_run_cmd = mock.Mock(side_effect=[server_cipher, json.dumps(response_succ)])
 
-        with mock.patch('requests.Session.send', mock_send):
-            with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-                file_ = "{}/requirements.txt".format(os.getcwd())
-                poeid = "poe id"
-                _, resp = tc.upload({}, file_, poeid)
-                self.assertEqual(resp["ErrCode"], 0)
+        mock_do_prepare = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_prepare', mock_do_prepare):
+            file_ = "{}/requirements.txt".format(os.getcwd())
+            poeid = "poe id"
+            _, resp = tc.upload({}, file_, poeid)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_upload_err(self):
-        server_cipher = "server cipher"
-        mock_send = mock.Mock(return_value=Response(200, response_fail))
-        mock_run_cmd = mock.Mock(side_effect=[server_cipher, json.dumps(response_fail)])
 
-        with mock.patch('requests.Session.send', mock_send):
-            with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-                file_ = "{}/requirements.txt".format(os.getcwd())
-                poeid = "poe id"
-                _, resp = tc.upload({}, file_, poeid)
-                self.assertEqual(resp["ErrCode"], 107)
+        mock_do_prepare = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_prepare', mock_do_prepare):
+            file_ = "{}/requirements.txt".format(os.getcwd())
+            poeid = "poe id"
+            _, resp = tc.upload({}, file_, poeid)
+            self.assertEqual(resp["ErrCode"], 107)
+
