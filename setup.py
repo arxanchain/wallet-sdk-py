@@ -13,6 +13,7 @@ setup(
     packages=find_packages(),
     platforms='any',
     install_requires=[
+        "httpretty==0.8.14",
         "certifi==2018.1.18",
         "chardet==3.0.4",
         "funcsigs==1.0.2",
@@ -26,7 +27,7 @@ setup(
         "py-common"
         ],
     dependency_links=[
-        "git+git://github.com/arxanchain/py-common.git@master#egg=py-common"
+        "git+git://github.com/arxanchain/py-common.git@master#egg=py-common-v2.0"
     ],
     include_package_data=True,
     zip_safe=False,
