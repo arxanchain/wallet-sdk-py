@@ -51,8 +51,6 @@ secret_key_b64 = "0lxEFzMQhn68vY2F0f+nOwP7kl5zjahjPcfyMAJVmzn0HNQssIIYh+c2CgCKEH
 nonce = "nonce"
 did = "did:ara:8uQhQMGzWxR8vw5P3UWH1j"
 todid = "did:axn:21tDAKCERh95uGgKbJNHYp"
-asset_id = "1f38a7a1-2c79-465e-a4c0-0038e25c7edg"
-coin_id = "1f38a7a1-2c79-465e-a4c0-0038e25c7edg"
 cert_path = "./cert_path"
 create_time = "1517818060"
 payload = {
@@ -76,294 +74,239 @@ class TransactionTest(unittest.TestCase):
     def test_transfer_asset_succ(self):
         """Test transfer asset successfully returned. """
 
-        mock_do_post = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_succ)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-                body = {
-                    "payload": json.dumps(payload),
-                    "signature": {
-                    	"creator": did,
-                    	"created": create_time,	
-                    	"nonce": nonce,
-                    	"signature_value": signature
-                    }
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
+            body = {
+                "payload": json.dumps(payload),
+                "signature": {
+                	"creator": did,
+                	"created": create_time,	
+                	"nonce": nonce,
+                	"signature_value": signature
                 }
-                _, resp = tc.transfer_assets({}, body)
-                self.assertEqual(resp["ErrCode"], 0)
+            }
+            _, resp = tc.transfer_assets({}, body)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_transfer_asset_err(self):
         """Test transfer asset with error code. """
 
-        mock_do_post = mock.Mock(return_value=Response(401, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_fail)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-                body = {
-                    "payload": json.dumps(payload),
-                    "signature": {
-                    	"creator": did,
-                    	"created": create_time,	
-                    	"nonce": nonce,
-                    	"signature_value": signature
-                    }
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
+            body = {
+                "payload": json.dumps(payload),
+                "signature": {
+                	"creator": did,
+                	"created": create_time,	
+                	"nonce": nonce,
+                	"signature_value": signature
                 }
-                _, resp = tc.transfer_assets({}, body)
-                self.assertEqual(resp["ErrCode"], 107)
+            }
+            _, resp = tc.transfer_assets({}, body)
+            self.assertEqual(resp["ErrCode"], 107)
 
     def test_transfer_asset_with_sign_succ(self):
         """Test transfer asset with ed25519 signed body successfully returned. """
 
-        mock_do_post = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_succ)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                _, resp = tc.transfer_assets_with_sign({}, did, create_time, secret_key_b64, payload)
-                self.assertEqual(resp["ErrCode"], 0)
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            _, resp = tc.transfer_assets_with_sign({}, did, create_time, secret_key_b64, payload)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_transfer_colored_tokens_succ(self):
         """Test transfer colored token successfully returned. """
 
-        mock_do_post = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_succ)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-                body = {
-                    "payload": json.dumps(payload),
-                    "signature": {
-                    	"creator": did,
-                    	"created": create_time,	
-                    	"nonce": nonce,
-                    	"signature_value": signature
-                    }
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
+            body = {
+                "payload": json.dumps(payload),
+                "signature": {
+                	"creator": did,
+                	"created": create_time,	
+                	"nonce": nonce,
+                	"signature_value": signature
                 }
-                _, resp = tc.transfer_colored_tokens({}, body)
-                self.assertEqual(resp["ErrCode"], 0)
+            }
+            _, resp = tc.transfer_colored_tokens({}, body)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_transfer_colored_tokens_err(self):
         """Test transfer colored tokens with error code. """
 
-        mock_do_post = mock.Mock(return_value=Response(401, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_fail)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-                body = {
-                    "payload": json.dumps(payload),
-                    "signature": {
-                    	"creator": did,
-                    	"created": create_time,	
-                    	"nonce": nonce,
-                    	"signature_value": signature
-                    }
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
+            body = {
+                "payload": json.dumps(payload),
+                "signature": {
+                	"creator": did,
+                	"created": create_time,	
+                	"nonce": nonce,
+                	"signature_value": signature
                 }
-                _, resp = tc.transfer_colored_tokens({}, body)
-                self.assertEqual(resp["ErrCode"], 107)
+            }
+            _, resp = tc.transfer_colored_tokens({}, body)
+            self.assertEqual(resp["ErrCode"], 107)
 
     def test_transfer_colored_tokens_with_sign_succ(self):
         """Test transfer colored token with ed25519 signed body successfully returned. """
-        mock_do_post = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_succ)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                _, resp = tc.transfer_colored_tokens_with_sign({}, did, create_time, secret_key_b64, payload)
-                self.assertEqual(resp["ErrCode"], 0)
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            _, resp = tc.transfer_colored_tokens_with_sign({}, did, create_time, secret_key_b64, payload)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_issue_colored_token_succ(self):
         """Test issue colored token successfully returned"""
 
-        mock_do_post = mock.Mock(return_value=Response(401, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_succ)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-                body = {
-                    "payload": json.dumps(payload),
-                    "signature": {
-                    	"creator": did,
-                    	"created": create_time,	
-                    	"nonce": nonce,
-                    	"signature_value": signature
-                    }
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
+            body = {
+                "payload": json.dumps(payload),
+                "signature": {
+                	"creator": did,
+                	"created": create_time,	
+                	"nonce": nonce,
+                	"signature_value": signature
                 }
-                _, resp = tc.issue_colored_token({}, body)
-                self.assertEqual(resp["ErrCode"], 0)
+            }
+            _, resp = tc.issue_colored_token({}, body)
+            self.assertEqual(resp["ErrCode"], 0)
 
 
     def test_issue_colored_token_err(self):
         """Test issue colored token with error code. """
-        mock_do_post = mock.Mock(return_value=Response(401, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_fail)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-                body = {
-                    "payload": json.dumps(payload),
-                    "signature": {
-                    	"creator": did,
-                    	"created": create_time,	
-                    	"nonce": nonce,
-                    	"signature_value": signature
-                    }
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
+            body = {
+                "payload": json.dumps(payload),
+                "signature": {
+                	"creator": did,
+                	"created": create_time,	
+                	"nonce": nonce,
+                	"signature_value": signature
                 }
-                _, resp = tc.issue_colored_token({}, body)
-                self.assertEqual(resp["ErrCode"], 107)
+            }
+            _, resp = tc.issue_colored_token({}, body)
+            self.assertEqual(resp["ErrCode"], 107)
     
     def test_issue_colored_token_with_sign_succ(self):
         """Test issue colored token with ed25519 signed body successfully returned"""
-        mock_do_post = mock.Mock(return_value=Response(401, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_succ)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                _, resp = tc.issue_colored_token_with_sign({}, did, create_time, secret_key_b64, payload)
-                self.assertEqual(resp["ErrCode"], 0)
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            _, resp = tc.issue_colored_token_with_sign({}, did, create_time, secret_key_b64, payload)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_issue_asset_succ(self):
         """Test issue asset successfully returned. """ 
-        mock_do_post = mock.Mock(return_value=Response(401, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_succ)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-                body = {
-                    "payload": json.dumps(payload),
-                    "signature": {
-                    	"creator": did,
-                    	"created": create_time,	
-                    	"nonce": nonce,
-                    	"signature_value": signature
-                    }
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
+            body = {
+                "payload": json.dumps(payload),
+                "signature": {
+                	"creator": did,
+                	"created": create_time,	
+                	"nonce": nonce,
+                	"signature_value": signature
                 }
-                _, resp = tc.issue_asset({}, body)
-                self.assertEqual(resp["ErrCode"], 0)
+            }
+            _, resp = tc.issue_asset({}, body)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_issue_asset_succ_with_sign(self):
         """Test issue asset with ed25519 signed body successfully returned. """ 
 
-        mock_do_post = mock.Mock(return_value=Response(401, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_succ)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                _, resp = tc.issue_asset_with_sign({}, did, create_time, secret_key_b64, payload)
-                self.assertEqual(resp["ErrCode"], 0)
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            _, resp = tc.issue_asset_with_sign({}, did, create_time, secret_key_b64, payload)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_issue_asset_err(self):
         """Test issue asset with error code. """
 
-        mock_do_post = mock.Mock(return_value=Response(401, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_fail)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-                body = {
-                    "payload": json.dumps(payload),
-                    "signature": {
-                    	"creator": did,
-                    	"created": create_time,	
-                    	"nonce": nonce,
-                    	"signature_value": signature
-                    }
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
+            body = {
+                "payload": json.dumps(payload),
+                "signature": {
+                	"creator": did,
+                	"created": create_time,	
+                	"nonce": nonce,
+                	"signature_value": signature
                 }
-                _, resp = tc.issue_asset({}, body)
-                self.assertEqual(resp["ErrCode"], 107)
+            }
+            _, resp = tc.issue_asset({}, body)
+            self.assertEqual(resp["ErrCode"], 107)
 
     def test_withdraw_colored_token_succ(self):
-        mock_do_post = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_succ)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-                body = {
-                    "payload": json.dumps(payload),
-                    "signature": {
-                    	"creator": did,
-                    	"created": create_time,	
-                    	"nonce": nonce,
-                    	"signature_value": signature
-                    }
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
+            body = {
+                "payload": json.dumps(payload),
+                "signature": {
+                	"creator": did,
+                	"created": create_time,	
+                	"nonce": nonce,
+                	"signature_value": signature
                 }
-                _, resp = tc.withdraw_colored_token({}, body)
-                self.assertEqual(resp["ErrCode"], 0)
+            }
+            _, resp = tc.withdraw_colored_token({}, body)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_withdraw_colored_token_err(self):
-        mock_do_post = mock.Mock(return_value=Response(401, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_fail)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-                body = {
-                    "payload": json.dumps(payload),
-                    "signature": {
-                    	"creator": did,
-                    	"created": create_time,	
-                    	"nonce": nonce,
-                    	"signature_value": signature
-                    }
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
+            body = {
+                "payload": json.dumps(payload),
+                "signature": {
+                	"creator": did,
+                	"created": create_time,	
+                	"nonce": nonce,
+                	"signature_value": signature
                 }
-                _, resp = tc.withdraw_colored_token({}, body)
-                self.assertEqual(resp["ErrCode"], 107)
+            }
+            _, resp = tc.withdraw_colored_token({}, body)
+            self.assertEqual(resp["ErrCode"], 107)
 
     def test_withdraw_colored_token_with_sign_succ(self):
         """Test withdraw colored token with ed25519 signed body successfully returned. """
 
-        mock_do_post = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(side_effect=[sig_cipher, client_cipher, json.dumps(response_succ)])
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.post', mock_do_post):
-                _, resp = tc.withdraw_colored_token_with_sign({}, did, create_time, secret_key_b64, payload)
-                self.assertEqual(resp["ErrCode"], 0)
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            _, resp = tc.withdraw_colored_token_with_sign({}, did, create_time, secret_key_b64, payload)
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_query_txn_logs_with_endpoint_succ(self):
-        mock_do_get = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(return_value=json.dumps(response_succ))
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.get', mock_do_get):
-                _, resp = tc.query_txn_logs_with_endpoint({}, "in", "endpoint001")
-                self.assertEqual(resp["ErrCode"], 0)
+    
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            _, resp = tc.query_txn_logs_with_endpoint({}, "in", "endpoint001")
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_query_txn_logs_with_endpoint_err(self):
-        mock_do_get = mock.Mock(return_value=Response(401, server_cipher))
-        mock_run_cmd = mock.Mock(return_value=json.dumps(response_fail))
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.get', mock_do_get):
-                _, resp = tc.query_txn_logs_with_endpoint({}, "in", "endpoint001")
-                self.assertEqual(resp["ErrCode"], 107)
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            _, resp = tc.query_txn_logs_with_endpoint({}, "in", "endpoint001")
+            self.assertEqual(resp["ErrCode"], 107)
 
     def test_query_txn_logs_with_id_succ(self):
-        mock_do_get = mock.Mock(return_value=Response(200, server_cipher))
-        mock_run_cmd = mock.Mock(return_value=json.dumps(response_succ))
-
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.get', mock_do_get):
-                _, resp = tc.query_txn_logs_with_id({}, "in", "yourID")
-                self.assertEqual(resp["ErrCode"], 0)
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            _, resp = tc.query_txn_logs_with_id({}, "in", "yourID")
+            self.assertEqual(resp["ErrCode"], 0)
 
     def test_query_txn_logs_with_id_err(self):
-        mock_do_get = mock.Mock(return_value=Response(401, server_cipher))
-        mock_run_cmd = mock.Mock(return_value=json.dumps(response_fail))
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            _, resp = tc.query_txn_logs_with_id({}, "in", "yourID")
+            self.assertEqual(resp["ErrCode"], 107)
 
-        with mock.patch('cryption.crypto.run_cmd', mock_run_cmd):
-            with mock.patch('requests.get', mock_do_get):
-                _, resp = tc.query_txn_logs_with_id({}, "in", "yourID")
-                self.assertEqual(resp["ErrCode"], 107)
 
