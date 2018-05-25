@@ -77,22 +77,7 @@ class POEClient(object):
                 }
         return req_params
 
-    def create(self, header, body):
-        """Create a POE."""
-
-        req_path= "create"
-        method = self.__client.do_post
-        req_params = self.__set_params(
-                header,
-                req_path, 
-                body=body
-                )
-        return self.__client.do_request(
-                req_params,
-                method,
-                )
-
-    def create_with_sign(self, header, creator, created,
+    def create(self, header, creator, created,
             privateB64, payload, nonce=""):
         """Create a POE with ed25519 signed body. """
 
@@ -121,22 +106,7 @@ class POEClient(object):
                 method,
                 )
 
-    def update(self, header, body):
-        """Update a POE."""
-
-        req_path = "update"
-        method = self.__client.do_put
-        req_params = self.__set_params(
-                header,
-                req_path,
-                body=body
-                )
-        return self.__client.do_request(
-                req_params,
-                method,
-                )
-
-    def update_with_sign(self, header, creator,
+    def update(self, header, creator,
             created, privateB64, payload, nonce=""):
         """Update a POE with ed25519 signed body."""
 

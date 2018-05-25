@@ -132,7 +132,7 @@ After creating the wallet account, you can create POE assets with this account a
 ...     "privateB64": privateB64,
 ...     "payload": payload
 ...     }
->>> _, resp = poe.create_with_sign(**params)
+>>> _, resp = poe.create(**params)
 >>> print resp
 ```
 

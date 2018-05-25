@@ -82,96 +82,38 @@ class POETest(unittest.TestCase):
         pass
 
     def test_create_succ(self):
-        """Test create a POE successfully returned. """
-
-        mock_do_request = mock.Mock(return_value=(0, response_succ))
-        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
-            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-            body = {
-                "payload": json.dumps(payload),
-                "signature": {
-                	"creator": did,
-                	"created": create_time,	
-                	"nonce": nonce,
-                	"signature_value": signature
-                }
-            }
-            _, resp = tc.create({}, body)
-            self.assertEqual(resp["ErrCode"], 0)
-
-    def test_create_err(self):
-        """Test create a POE with error code. """
- 
-        mock_do_request = mock.Mock(return_value=(0, response_fail))
-        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
-            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-            body = {
-                "payload": json.dumps(payload),
-                "signature": {
-                	"creator": did,
-                	"created": create_time,	
-                	"nonce": nonce,
-                	"signature_value": signature
-                }
-            }
-            _, resp = tc.create({}, body)
-            self.assertEqual(resp["ErrCode"], 107)
-
-    def test_create_with_sign_succ(self):
         """Test create POE with ed25519 signed body successfully returned. """
 
         mock_do_request = mock.Mock(return_value=(0, response_succ))
         with mock.patch('rest.api.api.Client.do_request', mock_do_request):
-            _, resp = tc.create_with_sign({}, fromdid, create_time, secret_key_b64, payload)
+            _, resp = tc.create({}, fromdid, create_time, secret_key_b64, payload)
             self.assertEqual(resp["ErrCode"], 0)
 
-    def test_update_succ(self):
-        """Test update poe successfully returned. """
-
-        mock_do_request = mock.Mock(return_value=(0, response_succ))
-        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
-            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-            body = {
-                "payload": json.dumps(payload),
-                "signature": {
-                	"creator": did,
-                	"created": create_time,	
-                	"nonce": nonce,
-                	"signature_value": signature
-                }
-            }
-            _, resp = tc.update({}, body)
-            self.assertEqual(resp["ErrCode"], 0)
-
-    def test_update_err(self):
-        """Test update poe with error code. """
-
+    def test_create_fail(self):
+        """Test create POE with ed25519 signed body failed returned. """
 
         mock_do_request = mock.Mock(return_value=(0, response_fail))
         with mock.patch('rest.api.api.Client.do_request', mock_do_request):
-            signature = sign(json.dumps(payload), secret_key_b64, did, nonce)
-            body = {
-                "payload": json.dumps(payload),
-                "signature": {
-                	"creator": did,
-                	"created": create_time,	
-                	"nonce": nonce,
-                	"signature_value": signature
-                }
-            }
-            _, resp = tc.update({}, body)
+            _, resp = tc.create({}, fromdid, create_time, secret_key_b64, payload)
             self.assertEqual(resp["ErrCode"], 107)
 
-    def test_update_with_sign_succ(self):
+    def test_update_succ(self):
         """Test update poe with ed25519 signed body successfully returned. """
 
         mock_do_request = mock.Mock(return_value=(0, response_succ))
         with mock.patch('rest.api.api.Client.do_request', mock_do_request):
-            _, resp = tc.update_with_sign({}, fromdid, create_time, secret_key_b64, payload)
+            _, resp = tc.update({}, fromdid, create_time, secret_key_b64, payload)
             self.assertEqual(resp["ErrCode"], 0)
 
-    def test_query_succ(self):
+    def test_update_fail(self):
+        """Test update poe with ed25519 signed body failed returned. """
 
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            _, resp = tc.update({}, fromdid, create_time, secret_key_b64, payload)
+            self.assertEqual(resp["ErrCode"], 107)
+
+    def test_query_succ(self):
         mock_do_request = mock.Mock(return_value=(0, response_succ))
         with mock.patch('rest.api.api.Client.do_request', mock_do_request):
             _, resp = tc.query({}, fromdid)

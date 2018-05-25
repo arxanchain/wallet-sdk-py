@@ -16,7 +16,7 @@ limitations under the License.
 
 import json
 from rest.api.common import APIKEYHEADER, FABIOROUTETAGHEADER, \
-        ROUTETAG, build_signature_body
+        ROUTETAG, build_signature_body, build_signature_body_base
 from common import VERSION
 
 class Transaction(object):
@@ -70,128 +70,71 @@ class Transaction(object):
                 }
         return req_params
 
-    def transfer_assets(self, header, body):
-        """Transfer assets."""
+    def __sign_txs(self, issuer, txs, params):
+        
+        for tx in txs:
+            if tx["founder"] != issuer:
+                # sign fee by platform private key
+                params = self.__client.get_ent_params()
+        return self.__sign_tx(tx, params)
 
-        req_path = "assets/transfer"
-        method = self.__client.do_post
-        req_params = self.__set_params(
-                header,
-                req_path,
-                body=body
-                )
-        return self.__client.do_request(
-                req_params,
-                method
-                )
+    def __sign_tx(self, tx, params):
+        if "txout" not in tx:
+            raise Exception("'txout' must be set in tx")
+        for i in range(len(tx["txout"])):
+            if "script" not in tx["txout"][i] or tx["txout"][i]["script"] is None:
+                raise Exception("no script field, no need to sign")
+            utxo_sig = tx["txout"][i]["script"]
+            if utxo_sig["publicKey"] is None:
+                continue
+            sig_body = build_signature_body_base(
+                    params["creator"],
+                    params["created"],
+                    params["nonce"],
+                    params["privateB64"],
+                    utxo_sig["publicKey"]
+            )
+            utxo_sig["signature"] = sig_body["signature_value"]
+            utxo_sig["nonce"] = sig_body["nonce"]
+            utxo_sig["creator"] = sig_body["creator"]
+            tx["txout"][i]["script"] = json.dumps(utxo_sig)
 
-    def transfer_assets_with_sign(self, header, creator,
-            created, privateB64, payload, nonce=""):
-        """Transfer assets with edd25519 signed body. """
+        return tx
 
-        payload = json.dumps(payload)
-        req_path = "assets/transfer"
-        method = self.__client.do_post
-        signature = build_signature_body(
-                creator,
-                created,
-                nonce,
-                privateB64,
-                payload
-                )
-        body = {
-                "payload": payload,
-                "signature": signature
-                }
-        req_params = self.__set_params(
-                header,
-                req_path,
-                body=body
-                )
-        return self.__client.do_request(
-                req_params,
-                method
-                )
 
-    def transfer_colored_tokens(self, header, body):
-        """Transfer colored token. """
-
-        req_path= "tokens/transfer"
-        method = self.__client.do_post
-        req_params = self.__set_params(
-                header,
-                req_path,
-                body=body
-                )
-        return self.__client.do_request(
-                req_params,
-                method
-                )
-
-    def transfer_colored_tokens_with_sign(self, header, creator,
-            created, privateB64, payload, nonce=""):
-        """Transfer colored token with ed25519 signed body. """
-
-        payload = json.dumps(payload)
-        req_path= "tokens/transfer"
-        method = self.__client.do_post
-        signature = build_signature_body(
-                creator,
-                created,
-                nonce,
-                privateB64,
-                payload
-                )
-        body = {
-                "payload": payload,
-                "signature": signature
-                }
-        req_params = self.__set_params(
-                header,
-                req_path,
-                body=body
-                )
-        return self.__client.do_request(
-                req_params,
-                method
-                )
-
-    def issue_colored_token(self, header, body):
-        """Issue colored token. """
-
-        req_path = "tokens/issue"
-        method = self.__client.do_post
-        req_params = self.__set_params(
-                header,
-                req_path, 
-                body=body
-                )
-        return self.__client.do_request(
-                req_params,
-                method
-                )
-
-    def issue_colored_token_with_sign(self, header, creator,
-            created, privateB64, payload, nonce=""):
+    def issue_colored_token(self, header, payload, params):
         """Issue colored token with sign. """
 
-        payload = json.dumps(payload)
-        req_path = "tokens/issue"
+        # 1 send transfer proposal to get wallet.Tx
+        _, issue_pre_resp = self.issue_ctoken_proposal(
+                header,
+                payload,
+                params
+        )
+        if "txs" not in issue_pre_resp:
+            raise Exception("issue ctoken proposal failed: {}".format(issue_pre_resp))
+        
+        txs = issue_pre_resp["txs"]
+        issuer = payload["issuer"]
+
+        # 2 sign public key as signature
+        txs = self.__sign_txs(issuer, txs, params)
+
+        # 3 call ProcessTx to transfer formally
+        return self.process_tx(header, txs)
+
+
+    def process_tx(self, header, txs):
+        """ process_tx transfer formally with signature TX. """
+        if txs is None or len(txs) <= 0:
+            raise Exception("txs should not be empty!")
+
+        req_path = "process"
+        body = {"txs": txs}
         method = self.__client.do_post
-        signature = build_signature_body(
-                creator,
-                created,
-                nonce,
-                privateB64,
-                payload
-                )
-        body = {
-                "payload": payload,
-                "signature": signature
-                }
         req_params = self.__set_params(
                 header,
-                req_path, 
+                req_path,
                 body=body
                 )
         return self.__client.do_request(
@@ -199,35 +142,154 @@ class Transaction(object):
                 method
                 )
 
-    def issue_asset(self, header, body):
+
+    def issue_ctoken_proposal(self, header, payload, params):
+        """ Issue ctoken proposal."""
+        
+        payload = json.dumps(payload)
+        req_path = "tokens/issue/prepare"
+        method = self.__client.do_post
+        params["payload"] = payload
+        signature = build_signature_body(**params)
+        body = {
+                "payload": payload,
+                "signature": signature
+                }
+        req_params = self.__set_params(
+                header,
+                req_path,
+                body=body
+                )
+        result = self.__client.do_request(
+                req_params,
+                method
+                )
+        payload = json.loads(result["payload"])
+        return payload
+
+    def transfer_assets(self, header, payload, params):
+        """Transfer assets."""
+
+        # 1 send transfer proposal to get wallet.Tx
+        _, trans_pre_resp = self.transfer_assets_proposal(
+                header,
+                payload,
+                params
+        )
+        if "txs" not in trans_pre_resp:
+            raise Exception("transfer assets proposal failed: {}".format(trans_pre_resp))
+        
+        txs = trans_pre_resp["txs"]
+        from_ = payload["from"]
+
+        # 2 sign public key as signature
+        txs = self.__sign_txs(from_, txs, params)
+
+        # 3 call ProcessTx to transfer formally
+        return self.process_tx(header, txs)
+
+
+    def transfer_assets_proposal(self, header, payload, params):
+        """ Transfer assets proposal."""
+        
+        payload = json.dumps(payload)
+        req_path = "assets/transfer/prepare"
+        method = self.__client.do_post
+        params["payload"] = payload
+        signature = build_signature_body(**params)
+        body = {
+                "payload": payload,
+                "signature": signature
+                }
+        req_params = self.__set_params(
+                header,
+                req_path,
+                body=body
+                )
+        result = self.__client.do_request(
+                req_params,
+                method
+                )
+        payload = json.loads(result["payload"])
+        return payload
+
+
+    def transfer_colored_tokens(self, header, payload, params):
+        """Transfer colored token. """
+
+        # 1 send transfer proposal to get wallet.Tx
+        _, trans_pre_resp = self.transfer_ctoken_proposal(
+                header,
+                payload,
+                params
+        )
+        if "txs" not in trans_pre_resp:
+            raise Exception("transfer assets proposal failed: {}".format(trans_pre_resp))
+
+        txs = trans_pre_resp["txs"]
+        from_ = payload["from"]
+
+        # 2 sign public key as signature
+        txs = self.__sign_txs(from_, txs, params)
+
+        # 3 call ProcessTx to transfer formally
+        return self.process_tx(header, txs)
+        
+
+    def transfer_ctoken_proposal(self, header, payload, params):
+        """ Transfer ctoken proposal."""
+        
+        payload = json.dumps(payload)
+        req_path = "tokens/transfer/prepare"
+        method = self.__client.do_post
+        params["payload"] = payload
+        signature = build_signature_body(**params)
+        body = {
+                "payload": payload,
+                "signature": signature
+                }
+        req_params = self.__set_params(
+                header,
+                req_path,
+                body=body
+                )
+        result = self.__client.do_request(
+                req_params,
+                method
+                )
+        payload = json.loads(result["payload"])
+        return payload
+
+    def issue_asset(self, header, payload, params):
         """Issue asset. """
 
-        req_path= "assets/issue"
-        method = self.__client.do_post
-        req_params = self.__set_params(
+         # 1 send transfer proposal to get wallet.Tx
+        _, issue_pre_resp = self.issue_assets_proposal(
                 header,
-                req_path, 
-                body=body
-                )
-        return self.__client.do_request(
-                req_params,
-                method
-                )
+                payload,
+                params
+        )
+        if "txs" not in issue_pre_resp:
+            raise Exception("issue ctoken proposal failed: {}".format(issue_pre_resp))
+        
+        txs = issue_pre_resp["txs"]
+        issuer = payload["issuer"]
 
-    def issue_asset_with_sign(self, header, creator,
-            created, privateB64, payload, nonce=""):
-        """Issue asset with ed25519 signed body. """
+        # 2 sign public key as signature
+        txs = self.__sign_txs(issuer, txs, params)
 
+        # 3 call ProcessTx to transfer formally
+        return self.process_tx(header, txs)
+
+
+    def issue_assets_proposal(self, header, payload, params):
+        """ Issue assets proposal."""
+        
         payload = json.dumps(payload)
-        req_path= "assets/issue"
+        req_path = "assets/issue/prepare"
         method = self.__client.do_post
-        signature = build_signature_body(
-                creator,
-                created,
-                nonce,
-                privateB64,
-                payload
-                )
+        params["payload"] = payload
+        signature = build_signature_body(**params)
         body = {
                 "payload": payload,
                 "signature": signature
@@ -237,53 +299,13 @@ class Transaction(object):
                 req_path,
                 body=body
                 )
-        return self.__client.do_request(
+        result = self.__client.do_request(
                 req_params,
                 method
                 )
+        payload = json.loads(result["payload"])
+        return payload
 
-    def withdraw_colored_token(self, header, body):
-        """Withdraw colored token. """
-
-        req_path = "tokens/withdraw"
-        method = self.__client.do_post
-        req_params = self.__set_params(
-                header,
-                req_path, 
-                body=body
-                )
-        return self.__client.do_request(
-                req_params,
-                method
-                )
-
-    def withdraw_colored_token_with_sign(self, header, creator,
-            created, privateB64, payload, nonce=""):
-        """Withdraw colored token with ed25519 signed body. """
-
-        payload = json.dumps(payload)
-        req_path = "tokens/withdraw"
-        method = self.__client.do_post
-        signature = build_signature_body(
-                creator,
-                created,
-                nonce,
-                privateB64,
-                payload
-                )
-        body = {
-                "payload": payload,
-                "signature": signature
-                }
-        req_params = self.__set_params(
-                header,
-                req_path,
-                body=body
-                )
-        return self.__client.do_request(
-                req_params,
-                method
-                )
 
     def query_txn_logs_with_endpoint(self, header, type_, endpoint):
         """Query transactions logs. """
