@@ -172,14 +172,8 @@ tokens as follows:
 ...     "owner": "owner did",
 ...     "asset_id": "asset did",
 ...     "amount": 1000,
-...     "fees": {
-...         "accounts": [
-...             "accounts did"
-...         ],
-...         "coins": [
-...             {
-...                 "coin_id": "coin id",
-...                 "amount": 5
+...     "fee": {
+...         "amount": 5,
 ...             }
 ...         ]
 ...     }
