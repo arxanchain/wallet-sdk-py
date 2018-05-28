@@ -53,15 +53,15 @@ else
     git pull
 fi
 
-echo "start sdk-go-common crypto-util and sign-util"
+echo "start sdk-go-common utils.so"
 echo "rm exists tools dir"
-if [ -d "${axn_dir}/sdk-go-common/crypto/tools" ]; then
-    cd ${axn_dir}/sdk-go-common/crypto/tools
+if [ -d "${axn_dir}/sdk-go-common/crypto/tools/library" ]; then
+    cd ${axn_dir}/sdk-go-common/crypto/tools/library
     rm -fr build
 fi
 
 echo "make..."
-cd ${axn_dir}/sdk-go-common/crypto/tools;make
+cd ${axn_dir}/sdk-go-common/crypto/tools/library;make
 
 echo "prepare utils path"
 readonly pyc_install_path=$(python -c 'import imp;print imp.find_module("cryption")[1]')
@@ -73,10 +73,9 @@ if [ ! -d "${pyc_install_path}/utils" ]; then
     mkdir -p ${pyc_install_path}/utils
 fi
 echo "utils path: ${pyc_install_path}/utils"
-echo "copy crypto-util and sign-util to utils path"
-cp -f ${axn_dir}sdk-go-common/crypto/tools/build/bin/crypto-util ${pyc_install_path}/utils
-cp -f ${axn_dir}sdk-go-common/crypto/tools/build/bin/sign-util ${pyc_install_path}/utils
-echo "crypto-util and sign-util copy succeed."
+echo "copy utils.so to utils path"
+cp -f ${axn_dir}sdk-go-common/crypto/tools/library/build/utils.so ${pyc_install_path}/utils
+echo "utils.so copy succeed."
 
 echo "start certs/tls/tls.cert and certs/users/API-KEY/API-KEY.key"
 echo "prepare certs dir"
