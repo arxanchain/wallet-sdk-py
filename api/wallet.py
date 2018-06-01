@@ -62,10 +62,11 @@ class WalletClient(object):
                     for x in url_params)
             request_url = "?".join([request_url, params])
 
-        self.__client.set_url(request_url)
+        #self.__client.set_url(request_url)
         req_params = {
                 "body": body,
-                "headers": header
+                "headers": header,
+                "url": request_url
                 }
         return req_params
 
