@@ -63,8 +63,9 @@ class Transaction(object):
                     for x in url_params)
             request_url = "?".join([request_url, params])
 
-        self.__client.set_url(request_url)
+        # self.__client.set_url(request_url)
         req_params = {
+                "url": request_url,
                 "body": body,
                 "headers": header
                 }
