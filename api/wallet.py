@@ -50,7 +50,6 @@ class WalletClient(object):
         return header
 
     def __set_url(self, req_path, url_params={}):
-        print ">>>>>>>>>>>ip: {}".format(self.__client.get_ip())
         request_url = ""
         if req_path:
             request_url = "/".join([
@@ -296,7 +295,6 @@ class WalletClient(object):
         return self.__client.do_prepare(prepared)
 
     def __sign_txs(self, issuer, txs, params):
-        print "***************issuer: {}, txs: {}".format(issuer, txs)
         for tx in txs:
             if tx["founder"] != issuer:
                 # sign fee by platform private key
@@ -313,7 +311,6 @@ class WalletClient(object):
             if utxo_sig["publicKey"] is None:
                 continue
 
-            print "**************params: {!r}".format(params)
             sig_body = build_signature_body_base(
                     params["creator"],
                     params["created"],
@@ -325,7 +322,6 @@ class WalletClient(object):
             utxo_sig["signature"] = [ord(one) for one in sig_body["signature_value"]]
             utxo_sig["nonce"] = sig_body["nonce"]
             utxo_sig["creator"] = sig_body["creator"]
-            print "*******************utxo_sig: {}".format(utxo_sig)
             tx["txout"][i]["script"] = json.dumps(utxo_sig)
 
         return tx
@@ -457,7 +453,6 @@ class WalletClient(object):
                 payload,
                 params
         )
-        print "***************time_dur, trans_pre_resp: {}, {}".format(time_dur_p, trans_pre_resp)
         if "txs" not in trans_pre_resp:
             raise Exception("transfer assets proposal failed: {}".format(trans_pre_resp))
 
