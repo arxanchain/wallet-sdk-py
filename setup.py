@@ -5,7 +5,7 @@ import io
 
 setup(
     name='wallet-sdk-py',
-    version='2.0',
+    version='2.0.1',
     description="Python SDKs for Blockchain Wallet.",
     long_description=io.open('README.md', encoding='utf-8').read(),
     url='https://github.com/arxanchain/wallet-sdk-py/',
@@ -26,7 +26,7 @@ setup(
         "py-common"
         ],
     dependency_links=[
-        "git+git://github.com/arxanchain/py-common.git@master#egg=py-common-v2.0"
+        "git+git://github.com/arxanchain/py-common.git@master#egg=py-common-v2.0.1"
     ],
     include_package_data=True,
     zip_safe=False,
