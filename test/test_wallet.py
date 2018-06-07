@@ -348,10 +348,6 @@ class WalletTest(unittest.TestCase):
             _, resp = wc.upload_poe({}, file_, poeid)
             self.assertEqual(resp["ErrCode"], 107)
 
-
-
-
-
     def test_query_txn_logs_with_endpoint_succ(self):
     
         mock_do_request = mock.Mock(return_value=(0, response_succ))

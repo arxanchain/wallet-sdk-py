@@ -179,12 +179,12 @@ tokens as follows:
 ...     "fee": {
 ...         "amount": 5,
 ...             }
-...         ]
 ...     }
 ... }
 >>> params = {
 ...     "creator": creator,
 ...     "created": created,
+...     "nonce": "yournonce",
 ...     "privateB64": privateB64,
 ...     "payload": payload
 ...     }
@@ -213,16 +213,16 @@ tokens, and can transfer some of them to other wallet accounts.
 ...     "fee": {
 ...         "amount": 5,
 ...             }
-...         ]
 ...     }
 ... }
 >>> params = {
 ...     "creator": creator,
 ...     "created": created,
+...     "nonce": "yournonce",
 ...     "privateB64": privateB64,
 ...     "payload": payload
 ...     }
->>> _, resp = wallet.transfer_assets({}, payload, params)
+>>> _, resp = wallet.transfer_colored_tokens({}, payload, params)
 >>> print resp
 ```
 

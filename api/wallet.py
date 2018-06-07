@@ -15,10 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import base64
 import json
 import sys
 reload(sys)
-sys.setdefaultencoding('utf-8') 
+sys.setdefaultencoding('utf-8')
 
 import requests
 from rest.api.common import APIKEYHEADER, FABIOROUTETAGHEADER, ROUTETAG, \
@@ -295,11 +296,12 @@ class WalletClient(object):
         return self.__client.do_prepare(prepared)
 
     def __sign_txs(self, issuer, txs, params):
-        for tx in txs:
+        for i, tx in enumerate(txs):
             if tx["founder"] != issuer:
                 # sign fee by platform private key
                 params = self.__client.get_ent_params()
-        return self.__sign_tx(tx, params)
+            txs[i] = self.__sign_tx(tx, params)
+        return txs
 
     def __sign_tx(self, tx, params):
         if "txout" not in tx:
@@ -307,22 +309,25 @@ class WalletClient(object):
         for i in range(len(tx["txout"])):
             if "script" not in tx["txout"][i] or tx["txout"][i]["script"] is None:
                 raise Exception("no script field, no need to sign")
-            utxo_sig = tx["txout"][i]["script"]
+
+            utxo_sig = json.loads(base64.b64decode(tx["txout"][i]["script"]))
             if utxo_sig["publicKey"] is None:
                 continue
 
+            public_key = base64.b64decode(utxo_sig["publicKey"])
             sig_body = build_signature_body_base(
                     params["creator"],
                     params["created"],
                     params["nonce"],
                     params["privateB64"],
-                    utxo_sig["publicKey"]
+                    public_key
+                    
             )
-            # utxo_sig["signature"] = sig_body["signature_value"]
-            utxo_sig["signature"] = [ord(one) for one in sig_body["signature_value"]]
-            utxo_sig["nonce"] = sig_body["nonce"]
-            utxo_sig["creator"] = sig_body["creator"]
-            tx["txout"][i]["script"] = json.dumps(utxo_sig)
+            utxo_sig["signature"] = base64.b64encode(sig_body["signature_value"])
+            utxo_sig["nonce"] = params["nonce"]
+            utxo_sig["creator"] = params["creator"]
+            b64_utxo_sig = json.dumps(utxo_sig)
+            tx["txout"][i]["script"] = base64.b64encode(b64_utxo_sig)
 
         return tx
 
@@ -347,6 +352,9 @@ class WalletClient(object):
 
         # 3 call ProcessTx to transfer formally
         time_dur_t, result = self.process_tx(header, txs)
+        payload = json.loads(result["Payload"])
+        payload["token_id"] = issue_pre_resp["token_id"]
+        result["Payload"] = json.dumps(payload)
 
         return time_dur_p+time_dur_t, result
 
@@ -355,8 +363,9 @@ class WalletClient(object):
         if txs is None or len(txs) <= 0:
             raise Exception("txs should not be empty!")
 
-        req_path = "process"
+        req_path = "transaction/process"
         body = {"txs": txs}
+        print "*****************body: {}".format(body)
         method = self.__client.do_post
         req_params = self.__set_params(
                 header,
@@ -373,7 +382,7 @@ class WalletClient(object):
         """ Issue ctoken proposal."""
         
         payload = json.dumps(payload)
-        req_path = "tokens/issue/prepare"
+        req_path = "transaction/tokens/issue/prepare"
         method = self.__client.do_post
         params["payload"] = payload
         signature = build_signature_body(**params)
@@ -390,7 +399,7 @@ class WalletClient(object):
                 req_params,
                 method
                 )
-        payload = json.loads(result["payload"])
+        payload = json.loads(result["Payload"])
 
         return time_dur, payload
 
@@ -422,7 +431,7 @@ class WalletClient(object):
         """ Transfer assets proposal."""
         
         payload = json.dumps(payload)
-        req_path = "assets/transfer/prepare"
+        req_path = "transaction/assets/transfer/prepare"
         method = self.__client.do_post
         params["payload"] = payload
         signature = build_signature_body(**params)
@@ -448,15 +457,12 @@ class WalletClient(object):
         """Transfer colored token. """
 
         # 1 send transfer proposal to get wallet.Tx
-        time_dur_p, trans_pre_resp = self.transfer_ctoken_proposal(
+        time_dur_p, txs = self.transfer_ctoken_proposal(
                 header,
                 payload,
                 params
         )
-        if "txs" not in trans_pre_resp:
-            raise Exception("transfer assets proposal failed: {}".format(trans_pre_resp))
-
-        txs = trans_pre_resp["txs"]
+        
         from_ = payload["from"]
 
         # 2 sign public key as signature
@@ -472,7 +478,7 @@ class WalletClient(object):
         """ Transfer ctoken proposal."""
         
         payload = json.dumps(payload)
-        req_path = "tokens/transfer/prepare"
+        req_path = "transaction/tokens/transfer/prepare"
         method = self.__client.do_post
         params["payload"] = payload
         signature = build_signature_body(**params)
@@ -522,7 +528,7 @@ class WalletClient(object):
         """ Issue assets proposal."""
         
         payload = json.dumps(payload)
-        req_path = "assets/issue/prepare"
+        req_path = "transaction/assets/issue/prepare"
         method = self.__client.do_post
         params["payload"] = payload
         signature = build_signature_body(**params)
