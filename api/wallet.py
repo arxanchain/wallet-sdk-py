@@ -365,7 +365,6 @@ class WalletClient(object):
 
         req_path = "transaction/process"
         body = {"txs": txs}
-        print "*****************body: {}".format(body)
         method = self.__client.do_post
         req_params = self.__set_params(
                 header,
@@ -462,7 +461,6 @@ class WalletClient(object):
                 payload,
                 params
         )
-        
         from_ = payload["from"]
 
         # 2 sign public key as signature

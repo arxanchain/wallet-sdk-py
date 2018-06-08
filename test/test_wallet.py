@@ -63,49 +63,18 @@ payload = {
         "amount": 10
     }
 }
-
-proposal_resp = {
-    "token_id": "0684f2fccc8c3209d34c0ab3d8f690b2c88c9aa87cad41259e981ba9556f42e7",
-    "txs": [
-        {
-            "version": 1,
-            "timestamp": {
-                "time": {
-                    "seconds": 1524901510,
-                    "nanos": 312840217
-                }
-            },
-            "txin": [
-                {
-                    "ix": 4294967295
-                }
-            ],
-            "txout": [
-                {
-                    "cTokenId": "9483625bb644c7b69a92b53e119536ec58761ef01fe5fe4aaf61f2ccbf301c91",
-                    "cType": 1,
-                    "value": 1000,
-                    "addr": "did:axn:65tGAKCERh95uHllllllRU",
-                    "until": -1,
-                    "script": {
-                        "creator": "",
-                        "created": 0,
-                        "nonce": "",
-                        "signature": "",
-                        "publicKey": "CkBkNjdmN2VkNGU5M2NhMzk1MmM4NDgzZGNlN2Y4YTExZmRmOTEyNmU2ZTU2NWMzNzk3MTA1NjkzMWRiMjBkZjEy"
-                    }
-                }
-            ],
-            "txType": 0,
-            "founder": "did:axn:8uQhQMGzWxR8vw5P3UWH1j"
-        }
-    ]
-}
 proposal_succ = {
-    "ErrCode":0,
-    "ErrMessage":"",
-    "Method":"",
-    "Payload": json.dumps(proposal_resp)
+    "ErrMessage": "",
+    "Payload": '{"token_id":"687b92d5e2fff8b46e408046399efc19329b443371e0c4298656e1f07e1c0795","txs":[{"version":1,"timestamp":{"time":{"seconds":1528364102,"nanos":232784168}},"txin":[{"ix":4294967295}],"txout":[{"cTokenId":"687b92d5e2fff8b46e408046399efc19329b443371e0c4298656e1f07e1c0795","cType":1,"value":393,"addr":"did:axn:15b17cb2-21c8-4de6-ac07-f9fd1fbe4d93","until":-1,"script":"eyJwdWJsaWNLZXkiOiIzdnNxWUFSQkQ0Z2RNTnh6VTdyMG1ZT3grWVorYlhPK29WWHNkZEI4S0VVPSJ9"}],"founder":"did:axn:8uQhQMGzWxR8vw5P3UWH1j"}]}',
+    "ErrCode": 0,
+    "Method": ""
+    }
+
+proposal_ctoken_succ = {
+    "ErrMessage": "",
+    "Payload": '[{"txin": [{"sourceHash": "25IOjlVtNJeVeFaRpyFStKaDYfXAEHimD7FbHq4YpW4="}], "founder": "did:axn:8uQhQMGzWxR8vw5P3UWH1j", "timestamp": {"time": {"seconds": 1528446360, "nanos": 854334288}}, "txType": 1, "version": 1, "txout": [{"addr": "did:axn:d435be4b-046a-4a7c-b3a7-29e11d5e8c18", "script": "eyJwdWJsaWNLZXkiOiJ0V2Myck1oNS9jRFo5OTYvM0lNRFNaWEVGd2VTcVBuU0trUHVrMFNDdkhBPSJ9", "cTokenId": "1e1d5e6716274608d054cfc4385786681549ed0b70c4ec44ee6a50ba3e0332b6", "cType": 1, "value": 55, "until": -1}, {"addr": "did:axn:e9dee062-21de-43dd-9d33-ba68cba523e5", "script": "eyJwdWJsaWNLZXkiOiIxUTJxcG14amNQMEg4Qkp1a09FSUYycHhlRU4xZElIQXZsT1N2M1dtMVU0PSJ9", "cTokenId": "1e1d5e6716274608d054cfc4385786681549ed0b70c4ec44ee6a50ba3e0332b6", "cType": 1, "value": 497, "until": -1}]}]',
+    "ErrCode": 0,
+    "Method": ""
 }
 response_succ = {
     "ErrCode":0,
@@ -425,7 +394,7 @@ class WalletTest(unittest.TestCase):
     def test_transfer_colored_tokens_succ(self):
         """Test transfer colored token successfully returned. """
 
-        mock_do_request = mock.Mock(side_effect=[(0, proposal_succ), (0, response_succ)])
+        mock_do_request = mock.Mock(side_effect=[(0, proposal_ctoken_succ), (0, response_succ)])
         with mock.patch('rest.api.api.Client.do_request', mock_do_request):
             wc = WalletClient(
                     cert_store
@@ -443,7 +412,7 @@ class WalletTest(unittest.TestCase):
     def test_transfer_colored_tokens_err(self):
         """Test transfer colored tokens with error code. """
 
-        mock_do_request = mock.Mock(side_effect=[(0, proposal_succ), (0, response_fail)])
+        mock_do_request = mock.Mock(side_effect=[(0, proposal_ctoken_succ), (0, response_fail)])
         with mock.patch('rest.api.api.Client.do_request', mock_do_request):
             wc = WalletClient(
                     cert_store

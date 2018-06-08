@@ -138,7 +138,14 @@ After creating the wallet account, you can create POE assets with this account a
 ...     "payload": payload,
 ...     "nonce": "nonce"
 ...     }
->>> _, resp = wallet.create_poe(**params)
+>>> _, resp = wallet.create_poe(
+...     header={},
+...     creator=creator,
+...     created=created,
+...     privateB64=privateB64,
+...     payload=payload,
+...     nonce="nonce"
+... )
 >>> print resp
 ```
 
@@ -303,3 +310,13 @@ transaction is confirmed.
 >>> _, resp = wallet.register(header, body)
 >>> print resp
 ```
+
+### Transaction procedure
+
+1. Send transfer proposal to get wallet.Tx
+
+2. Sign public key as signature
+
+3. Call ProcessTx to transfer formally
+
+
