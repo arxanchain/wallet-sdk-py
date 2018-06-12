@@ -26,6 +26,7 @@ ROOTPATH = os.path.join(
 sys.path.append(ROOTPATH)
 from api.wallet import WalletClient
 from rest.api.api import Client
+from cryption.crypto import sign
 
 class Response(object):
     def __init__(self, status_code, text):
@@ -35,11 +36,46 @@ class Response(object):
 IP = "http://127.0.0.1:9143"
 APIKEY = "pWEzB4yMM1518346407"
 cert_path = "/your/cert/path"
+ent_sign_param = {}
 cert_store = Client(
         APIKEY,
         cert_path,
+        ent_sign_param,
         IP
         )
+secret_key_b64 = "0lxEFzMQhn68vY2F0f+nOwP7kl5zjahjPcfyMAJVmzn0HNQssIIYh+c2CgCKEHeUvxqCu6W/sJKqKt2DLJnKpw=="
+nonce = "nonce"
+did = "did:ara:8uQhQMGzWxR8vw5P3UWH1j"
+fromdid = "did:ara:9uQhQMGzWxR8vw5P3UWH1b"
+create_time = "1517818060"
+payload = {
+    "from": "did:axn:8uQhQMGzWxR8vw5P3UWH1j",
+    "to": "did:axn:21tDAKCERh95uGgKbJNHYp",
+    "issuer": "did:axn:8uQhQMGzWxR8vw5P3UWH1j",
+    "asset_id": "1f38a7a1-2c79-465e-a4c0-0038e25c7edg",
+    "tokens": [
+        {
+            "token_id": "0684f2fccc8c3209d34c0ab3d8f690b2c88c9aa87cad41259e981ba9556f42e7",
+            "amount": 5
+        }
+    ],
+    "fee": {
+        "amount": 10
+    }
+}
+proposal_succ = {
+    "ErrMessage": "",
+    "Payload": '{"token_id":"687b92d5e2fff8b46e408046399efc19329b443371e0c4298656e1f07e1c0795","txs":[{"version":1,"timestamp":{"time":{"seconds":1528364102,"nanos":232784168}},"txin":[{"ix":4294967295}],"txout":[{"cTokenId":"687b92d5e2fff8b46e408046399efc19329b443371e0c4298656e1f07e1c0795","cType":1,"value":393,"addr":"did:axn:15b17cb2-21c8-4de6-ac07-f9fd1fbe4d93","until":-1,"script":"eyJwdWJsaWNLZXkiOiIzdnNxWUFSQkQ0Z2RNTnh6VTdyMG1ZT3grWVorYlhPK29WWHNkZEI4S0VVPSJ9"}],"founder":"did:axn:8uQhQMGzWxR8vw5P3UWH1j"}]}',
+    "ErrCode": 0,
+    "Method": ""
+    }
+
+proposal_ctoken_succ = {
+    "ErrMessage": "",
+    "Payload": '[{"txin": [{"sourceHash": "25IOjlVtNJeVeFaRpyFStKaDYfXAEHimD7FbHq4YpW4="}], "founder": "did:axn:8uQhQMGzWxR8vw5P3UWH1j", "timestamp": {"time": {"seconds": 1528446360, "nanos": 854334288}}, "txType": 1, "version": 1, "txout": [{"addr": "did:axn:d435be4b-046a-4a7c-b3a7-29e11d5e8c18", "script": "eyJwdWJsaWNLZXkiOiJ0V2Myck1oNS9jRFo5OTYvM0lNRFNaWEVGd2VTcVBuU0trUHVrMFNDdkhBPSJ9", "cTokenId": "1e1d5e6716274608d054cfc4385786681549ed0b70c4ec44ee6a50ba3e0332b6", "cType": 1, "value": 55, "until": -1}, {"addr": "did:axn:e9dee062-21de-43dd-9d33-ba68cba523e5", "script": "eyJwdWJsaWNLZXkiOiIxUTJxcG14amNQMEg4Qkp1a09FSUYycHhlRU4xZElIQXZsT1N2M1dtMVU0PSJ9", "cTokenId": "1e1d5e6716274608d054cfc4385786681549ed0b70c4ec44ee6a50ba3e0332b6", "cType": 1, "value": 497, "until": -1}]}]',
+    "ErrCode": 0,
+    "Method": ""
+}
 response_succ = {
     "ErrCode":0,
     "ErrMessage":"",
@@ -194,5 +230,233 @@ class WalletTest(unittest.TestCase):
             _, resp = wc.query_wallet_balance({}, id_)
             self.assertEqual(resp["ErrCode"], 107)
 
+    def test_create_poe_succ(self):
+        """Test create POE with ed25519 signed body successfully returned. """
+
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            _, resp = wc.create_poe({}, fromdid, create_time, secret_key_b64, payload)
+            self.assertEqual(resp["ErrCode"], 0)
+
+    def test_create_poe_fail(self):
+        """Test create POE with ed25519 signed body failed returned. """
+
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            _, resp = wc.create_poe({}, fromdid, create_time, secret_key_b64, payload)
+            self.assertEqual(resp["ErrCode"], 107)
+
+    def test_update_poe_succ(self):
+        """Test update poe with ed25519 signed body successfully returned. """
+
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            _, resp = wc.update_poe({}, fromdid, create_time, secret_key_b64, payload)
+            self.assertEqual(resp["ErrCode"], 0)
+
+    def test_update_poe_fail(self):
+        """Test update poe with ed25519 signed body failed returned. """
+
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            _, resp = wc.update_poe({}, fromdid, create_time, secret_key_b64, payload)
+            self.assertEqual(resp["ErrCode"], 107)
+
+    def test_query_poe_succ(self):
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            _, resp = wc.query_poe({}, fromdid)
+            self.assertEqual(resp["ErrCode"], 0)
+
+    def test_query_poe_err(self):
+
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            _, resp = wc.query_poe({}, fromdid)
+            self.assertEqual(resp["ErrCode"], 107)
+
+    def test_upload_poe_succ(self):
+
+        mock_do_prepare = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_prepare', mock_do_prepare):
+            file_ = "{}/requirements.txt".format(os.getcwd())
+            poeid = "poe id"
+            wc = WalletClient(
+                    cert_store
+                    )
+            _, resp = wc.upload_poe({}, file_, poeid)
+            self.assertEqual(resp["ErrCode"], 0)
+
+    def test_upload_poe_err(self):
+
+        mock_do_prepare = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_prepare', mock_do_prepare):
+            file_ = "{}/requirements.txt".format(os.getcwd())
+            poeid = "poe id"
+            wc = WalletClient(
+                    cert_store
+                    )
+            _, resp = wc.upload_poe({}, file_, poeid)
+            self.assertEqual(resp["ErrCode"], 107)
+
+    def test_query_txn_logs_with_endpoint_succ(self):
+    
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            _, resp = wc.query_txn_logs_with_endpoint({}, "in", "endpoint001")
+            self.assertEqual(resp["ErrCode"], 0)
+
+    def test_query_txn_logs_with_endpoint_err(self):
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            _, resp = wc.query_txn_logs_with_endpoint({}, "in", "endpoint001")
+            self.assertEqual(resp["ErrCode"], 107)
+
+    def test_query_txn_logs_with_id_succ(self):
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            _, resp = wc.query_txn_logs_with_id({}, "in", "yourID")
+            self.assertEqual(resp["ErrCode"], 0)
+
+    def test_query_txn_logs_with_id_err(self):
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            _, resp = wc.query_txn_logs_with_id({}, "in", "yourID")
+            self.assertEqual(resp["ErrCode"], 107)
+
+    def test_transfer_asset_succ(self):
+        """Test transfer asset successfully returned. """
+
+        mock_do_request = mock.Mock(side_effect=[(0, proposal_succ), (0, response_succ)])
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            body = {
+                "payload": json.dumps(payload),
+                "creator": did,
+                "created": create_time,	
+                "nonce": nonce,
+                "privateB64": secret_key_b64
+            }
+            _, resp = wc.transfer_assets({}, payload, body)
+            self.assertEqual(resp["ErrCode"], 0)
 
 
+    def test_transfer_asset_err(self):
+        """Test transfer asset with error code. """
+
+        mock_do_request = mock.Mock(side_effect=[(0, proposal_succ), (0, response_fail)])
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            body = {
+                "payload": json.dumps(payload),
+                "creator": did,
+                "created": create_time,	
+                "nonce": nonce,
+                "privateB64": secret_key_b64
+            }
+            _, resp = wc.transfer_assets({}, payload, body)
+            self.assertEqual(resp["ErrCode"], 107)
+
+    def test_transfer_colored_tokens_succ(self):
+        """Test transfer colored token successfully returned. """
+
+        mock_do_request = mock.Mock(side_effect=[(0, proposal_ctoken_succ), (0, response_succ)])
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            body = {
+                "payload": json.dumps(payload),
+                "creator": did,
+                "created": create_time,	
+                "nonce": nonce,
+                "privateB64": secret_key_b64
+            }
+            _, resp = wc.transfer_colored_tokens({}, payload, body)
+            self.assertEqual(resp["ErrCode"], 0)
+
+    def test_transfer_colored_tokens_err(self):
+        """Test transfer colored tokens with error code. """
+
+        mock_do_request = mock.Mock(side_effect=[(0, proposal_ctoken_succ), (0, response_fail)])
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            body = {
+                "payload": json.dumps(payload),
+                "creator": did,
+                "created": create_time,	
+                "nonce": nonce,
+                "privateB64": secret_key_b64
+            }
+            _, resp = wc.transfer_colored_tokens({}, payload, body)
+            self.assertEqual(resp["ErrCode"], 107)
+
+    def test_issue_asset_succ(self):
+        """Test issue asset successfully returned. """ 
+        mock_do_request = mock.Mock(side_effect=[(0, proposal_succ), (0, response_succ)])
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            body = {
+                "payload": json.dumps(payload),
+                "creator": did,
+                "created": create_time,	
+                "nonce": nonce,
+                "privateB64": secret_key_b64
+            }
+            _, resp = wc.issue_asset({}, payload, body)
+            self.assertEqual(resp["ErrCode"], 0)
+
+
+    def test_issue_asset_err(self):
+        """Test issue asset with error code. """
+
+        mock_do_request = mock.Mock(side_effect=[(0, proposal_succ), (0, response_fail)])
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(cert_store)
+            body = {
+                "payload": json.dumps(payload),
+                "creator": did,
+                "created": create_time,	
+                "nonce": nonce,
+                "privateB64": secret_key_b64
+            }   
+            _, resp = wc.issue_asset({}, payload, body)
+            self.assertEqual(resp["ErrCode"], 107)

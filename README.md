@@ -61,13 +61,20 @@ the BAAS service need to use this object, you can register a client object as fo
 ```python
 >>> from rest.api.api import Client
 >>> apikey = "pWEzB4yMM1518346407"
->>> cert_path = "/usr/local/lib/python2.7/site-packages/py_common-2.0-py2.7.egg/cryption/ecc/certs"
+>>> cert_path = "/usr/local/lib/python2.7/site-packages/py_common-2.0.1-py2.7.egg/cryption/ecc/certs"
 >>> ip_addr = "http://127.0.0.1:9143"
->>> client = Client(apikey, cert_path, ip_addr)
+>>> ent_sign_param = {
+...     "creator": "did:axn:09e2fc68-f51e-4aff-b6e4-427cce3ed1af",
+...     "created": "1517818060",
+...     "nonce": "nonce",
+...     "privateB64": "RiQ+oEuaelf2aecUZvG7xrWr+p43ZfjGZYfDCXfQD+ku0xY5BXP8kIKhiqzKRvfyKBKM3y7V9O1bF7X3M9mxkQ=="
+... }
+>>> client = Client(apikey, cert_path, ent_sign_param, ip_addr)
 ```
 
 Param **apikey** is set to the API access key applied on `ChainConsole` management page,
 param **cert_path** is the path of your private key file and tls certificate,
+Param **ent_sign_param** is the enterprise private key dictionary.
 and **ip_addr** is the IP address of the BAAS server entrance.
 If you want to visit the BAAS service bypass the wasabi service,
 you need to add param enable_crypto=False.
@@ -114,8 +121,6 @@ events.
 After creating the wallet account, you can create POE assets with this account as follows:
 
 ```python
->>> from api.poe import POEClient
->>> poe = POEClient(client)
 >>> creator = "wallet ID"
 >>> created = "123456" ## timestamp when poe is created
 >>> privateB64 = "base64 formatted private key"
@@ -132,9 +137,17 @@ After creating the wallet account, you can create POE assets with this account a
 ...     "creator": creator,
 ...     "created": created,
 ...     "privateB64": privateB64,
-...     "payload": payload
+...     "payload": payload,
+...     "nonce": "nonce"
 ...     }
->>> _, resp = poe.create_with_sign(**params)
+>>> _, resp = wallet.create_poe(
+...     header={},
+...     creator=creator,
+...     created=created,
+...     privateB64=privateB64,
+...     payload=payload,
+...     nonce="nonce"
+... )
 >>> print resp
 ```
 
@@ -151,7 +164,7 @@ After creating POE, you can upload the POE file for this account as follows:
 ```python
 >>> filename = "file path"
 >>> poeid = "poeid"
->>> _, resp = poe.upload({}, filename, poeid)
+>>> _, resp = wallet.upload({}, filename, poeid)
 >>> print resp
 ```
 
@@ -164,8 +177,6 @@ Once you have possessed an asset, you can use this specific asset to issue color
 tokens as follows:
 
 ```python
->>> from api.transaction import Transaction
->>> txn = Transaction(client)
 >>> creator = "creator"
 >>> created = 12345
 >>> privateB64 = "base64 formatted private key"
@@ -177,17 +188,16 @@ tokens as follows:
 ...     "fee": {
 ...         "amount": 5,
 ...             }
-...         ]
 ...     }
 ... }
 >>> params = {
-...     "header": {},
 ...     "creator": creator,
 ...     "created": created,
+...     "nonce": "yournonce",
 ...     "privateB64": privateB64,
 ...     "payload": payload
 ...     }
->>> _, resp = txn.issue_colored_token_with_sign(**params)
+>>> _, resp = wallet.issue_colored_token({}, payload, params)
 ```
 
 * When issuing colored tokens, you need to specify an issuer(a wallet account ID),
@@ -212,17 +222,16 @@ tokens, and can transfer some of them to other wallet accounts.
 ...     "fee": {
 ...         "amount": 5,
 ...             }
-...         ]
 ...     }
 ... }
 >>> params = {
-...     "header": {},
 ...     "creator": creator,
 ...     "created": created,
+...     "nonce": "yournonce",
 ...     "privateB64": privateB64,
 ...     "payload": payload
 ...     }
->>> _, resp = txn.transfer_assets_with_sign(**params)
+>>> _, resp = wallet.transfer_colored_tokens({}, payload, params)
 >>> print resp
 ```
 
@@ -303,3 +312,13 @@ transaction is confirmed.
 >>> _, resp = wallet.register(header, body)
 >>> print resp
 ```
+
+### Transaction procedure
+
+1. Send transfer proposal to get wallet.Tx
+
+2. Sign public key as signature
+
+3. Call ProcessTx to transfer formally
+
+
