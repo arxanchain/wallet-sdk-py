@@ -133,21 +133,13 @@ After creating the wallet account, you can create POE assets with this account a
 ...     "metadata": map(ord, '{"address": "xxx", "telephone": "xxx", ...}')
 ... }
 >>> params = {
-...     "header": {},
 ...     "creator": creator,
 ...     "created": created,
 ...     "privateB64": privateB64,
 ...     "payload": payload,
-...     "nonce": "nonce"
+...     "nonce": "your nonce"
 ...     }
->>> _, resp = wallet.create_poe(
-...     header={},
-...     creator=creator,
-...     created=created,
-...     privateB64=privateB64,
-...     payload=payload,
-...     nonce="nonce"
-... )
+>>> _, resp = wallet.create_poe({}, payload, params)
 >>> print resp
 ```
 
@@ -193,7 +185,7 @@ tokens as follows:
 >>> params = {
 ...     "creator": creator,
 ...     "created": created,
-...     "nonce": "yournonce",
+...     "nonce": "your nonce",
 ...     "privateB64": privateB64,
 ...     "payload": payload
 ...     }
@@ -227,7 +219,7 @@ tokens, and can transfer some of them to other wallet accounts.
 >>> params = {
 ...     "creator": creator,
 ...     "created": created,
-...     "nonce": "yournonce",
+...     "nonce": "your nonce",
 ...     "privateB64": privateB64,
 ...     "payload": payload
 ...     }

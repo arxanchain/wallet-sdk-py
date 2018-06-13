@@ -189,20 +189,13 @@ class WalletClient(object):
                 method,
                 )
 
-    def create_poe(self, header, creator, created,
-            privateB64, payload, nonce=""):
+    def create_poe(self, header, payload, params):
         """Create a POE with ed25519 signed body. """
 
         payload = json.dumps(payload)
         req_path = "poe/create"
         method = self.__client.do_post
-        signature = build_signature_body(
-                creator,
-                created,
-                nonce,
-                privateB64,
-                payload
-                )
+        signature = build_signature_body(**params)
         body = {
                 "payload": payload,
                 "signature": signature
@@ -218,20 +211,13 @@ class WalletClient(object):
                 method,
                 )
 
-    def update_poe(self, header, creator,
-            created, privateB64, payload, nonce=""):
+    def update_poe(self, header, payload, params):
         """Update a POE with ed25519 signed body."""
 
         payload = json.dumps(payload)
         req_path = "poe/update"
         method = self.__client.do_put
-        signature = build_signature_body(
-                creator,
-                created,
-                nonce,
-                privateB64,
-                payload
-                )
+        signature = build_signature_body(**params)
         body = {
                 "payload": payload,
                 "signature": signature
