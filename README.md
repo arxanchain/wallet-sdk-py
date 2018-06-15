@@ -42,6 +42,10 @@ $ python setup.py install
 you need to configure your installed py-common package.
 For more details please refer to [the usage of py-common](https://github.com/arxanchain/py-common#usage)
 
+**Note:** If you use linux, you can ignore this step.
+If you use Mac or Windows, you should build the `sdk-go-common` dynamic link libraries on your OS instead of the default `py-common installation path/cryption/utils/utils.so`.
+For more details please refer to [the usage of py-common](https://github.com/arxanchain/py-common#usage) and [sdk-go-common](https://github.com/arxanchain/sdk-go-common/tree/master/crypto/tools)
+
 ### Run unit test
 
 The following command will run unit test
@@ -133,21 +137,13 @@ After creating the wallet account, you can create POE assets with this account a
 ...     "metadata": map(ord, '{"address": "xxx", "telephone": "xxx", ...}')
 ... }
 >>> params = {
-...     "header": {},
 ...     "creator": creator,
 ...     "created": created,
 ...     "privateB64": privateB64,
 ...     "payload": payload,
-...     "nonce": "nonce"
+...     "nonce": "your nonce"
 ...     }
->>> _, resp = wallet.create_poe(
-...     header={},
-...     creator=creator,
-...     created=created,
-...     privateB64=privateB64,
-...     payload=payload,
-...     nonce="nonce"
-... )
+>>> _, resp = wallet.create_poe({}, payload, params)
 >>> print resp
 ```
 
@@ -193,7 +189,7 @@ tokens as follows:
 >>> params = {
 ...     "creator": creator,
 ...     "created": created,
-...     "nonce": "yournonce",
+...     "nonce": "your nonce",
 ...     "privateB64": privateB64,
 ...     "payload": payload
 ...     }
@@ -227,7 +223,7 @@ tokens, and can transfer some of them to other wallet accounts.
 >>> params = {
 ...     "creator": creator,
 ...     "created": created,
-...     "nonce": "yournonce",
+...     "nonce": "your nonce",
 ...     "privateB64": privateB64,
 ...     "payload": payload
 ...     }
