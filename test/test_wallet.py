@@ -238,7 +238,15 @@ class WalletTest(unittest.TestCase):
             wc = WalletClient(
                     cert_store
                     )
-            _, resp = wc.create_poe({}, fromdid, create_time, secret_key_b64, payload)
+            params = {
+                "creator": fromdid,
+                "created": create_time,
+                "privateB64": secret_key_b64,
+                "payload": payload,
+                "nonce": ""
+            }
+
+            _, resp = wc.create_poe({}, payload, params)
             self.assertEqual(resp["ErrCode"], 0)
 
     def test_create_poe_fail(self):
@@ -249,7 +257,15 @@ class WalletTest(unittest.TestCase):
             wc = WalletClient(
                     cert_store
                     )
-            _, resp = wc.create_poe({}, fromdid, create_time, secret_key_b64, payload)
+            params = {
+                "creator": fromdid,
+                "created": create_time,
+                "privateB64": secret_key_b64,
+                "payload": payload,
+                "nonce": ""
+            }
+
+            _, resp = wc.create_poe({}, payload, params)
             self.assertEqual(resp["ErrCode"], 107)
 
     def test_update_poe_succ(self):
@@ -260,7 +276,15 @@ class WalletTest(unittest.TestCase):
             wc = WalletClient(
                     cert_store
                     )
-            _, resp = wc.update_poe({}, fromdid, create_time, secret_key_b64, payload)
+            params = {
+                "creator": fromdid,
+                "created": create_time,
+                "privateB64": secret_key_b64,
+                "payload": payload,
+                "nonce": ""
+            }
+
+            _, resp = wc.update_poe({}, payload, params)
             self.assertEqual(resp["ErrCode"], 0)
 
     def test_update_poe_fail(self):
@@ -271,7 +295,15 @@ class WalletTest(unittest.TestCase):
             wc = WalletClient(
                     cert_store
                     )
-            _, resp = wc.update_poe({}, fromdid, create_time, secret_key_b64, payload)
+            params = {
+                "creator": fromdid,
+                "created": create_time,
+                "privateB64": secret_key_b64,
+                "payload": payload,
+                "nonce": ""
+            }
+
+            _, resp = wc.update_poe({}, payload, params)
             self.assertEqual(resp["ErrCode"], 107)
 
     def test_query_poe_succ(self):

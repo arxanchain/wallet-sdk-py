@@ -218,6 +218,7 @@ class WalletClient(object):
         payload = json.dumps(payload)
         req_path = "poe/update"
         method = self.__client.do_put
+        params["payload"] = payload
         signature = build_signature_body(**params)
         body = {
                 "payload": payload,
