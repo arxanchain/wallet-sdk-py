@@ -42,6 +42,10 @@ $ python setup.py install
 you need to configure your installed py-common package.
 For more details please refer to [the usage of py-common](https://github.com/arxanchain/py-common#usage)
 
+**Note:** If you use linux, you can ignore this step.
+If you use Mac or Windows, you should build the `sdk-go-common` dynamic link libraries on your OS instead of the default `py-common installation path/cryption/utils/utils.so`.
+For more details please refer to [the usage of py-common](https://github.com/arxanchain/py-common#usage) and [sdk-go-common](https://github.com/arxanchain/sdk-go-common/tree/master/crypto/tools)
+
 ### Run unit test
 
 The following command will run unit test
