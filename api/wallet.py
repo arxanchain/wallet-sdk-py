@@ -195,6 +195,7 @@ class WalletClient(object):
         payload = json.dumps(payload)
         req_path = "poe/create"
         method = self.__client.do_post
+        params["payload"] = payload
         signature = build_signature_body(**params)
         body = {
                 "payload": payload,
