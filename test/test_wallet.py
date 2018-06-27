@@ -331,10 +331,11 @@ class WalletTest(unittest.TestCase):
         with mock.patch('rest.api.api.Client.do_prepare', mock_do_prepare):
             file_ = "{}/requirements.txt".format(os.getcwd())
             poeid = "poe id"
+            readonly = "True"
             wc = WalletClient(
                     cert_store
                     )
-            _, resp = wc.upload_poe({}, file_, poeid)
+            _, resp = wc.upload_poe({}, file_, poeid, readonly)
             self.assertEqual(resp["ErrCode"], 0)
 
     def test_upload_poe_err(self):
@@ -343,10 +344,11 @@ class WalletTest(unittest.TestCase):
         with mock.patch('rest.api.api.Client.do_prepare', mock_do_prepare):
             file_ = "{}/requirements.txt".format(os.getcwd())
             poeid = "poe id"
+            readonly = "True"
             wc = WalletClient(
                     cert_store
                     )
-            _, resp = wc.upload_poe({}, file_, poeid)
+            _, resp = wc.upload_poe({}, file_, poeid, readonly)
             self.assertEqual(resp["ErrCode"], 107)
 
     def test_query_txn_logs_with_endpoint_succ(self):

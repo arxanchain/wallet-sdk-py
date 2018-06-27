@@ -160,7 +160,8 @@ After creating POE, you can upload the POE file for this account as follows:
 ```python
 >>> filename = "file path"
 >>> poeid = "poeid"
->>> _, resp = wallet.upload({}, filename, poeid)
+>>> readonly = "False"
+>>> _, resp = wallet.upload_poe({}, filename, poeid, readonly)
 >>> print resp
 ```
 

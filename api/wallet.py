@@ -252,7 +252,7 @@ class WalletClient(object):
                 method,
                 )
 
-    def upload_poe(self, header, file_, poe_id):
+    def upload_poe(self, header, file_, poe_id, readonly):
         """Upload POE file. """
         req_path = "poe/upload"
         poefile = "application/octet-stream"
@@ -266,7 +266,7 @@ class WalletClient(object):
         }
         data = {
                 "poe_id": poe_id,
-                "read_only": "false"
+                "read_only": readonly
         }
 
         req_url = self.__set_url(req_path)
