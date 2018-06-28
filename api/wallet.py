@@ -17,6 +17,7 @@ limitations under the License.
 
 import base64
 import json
+import collections
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -251,30 +252,29 @@ class WalletClient(object):
                 method,
                 )
 
-    def upload_poe(self, header, file_, poe_id):
+    def upload_poe(self, header, file_, poe_id, readonly):
         """Upload POE file. """
         req_path = "poe/upload"
         poefile = "application/octet-stream"
-        poeid_filepart = (
-                '',
-                poe_id,
-                )
-
         filepart = (
                 file_,
                 open(file_, 'rb'),
                 poefile
                 )
         files = {
-                "poe_id": poeid_filepart,
-                "poe_file": filepart
-                }
+                "poe_file" : filepart
+        }
+        data = {
+                "poe_id": poe_id,
+                "read_only": readonly
+        }
 
         req_url = self.__set_url(req_path)
         prepared = requests.Request(
                 "POST",
                 url=req_url,
-                files=files
+                files=files,
+                data=data
                 ).prepare()
 
         header = self.__set_header(header)
