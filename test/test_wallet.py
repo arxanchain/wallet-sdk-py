@@ -463,7 +463,7 @@ class WalletTest(unittest.TestCase):
 
     def test_issue_asset_succ(self):
         """Test issue asset successfully returned. """ 
-        mock_do_request = mock.Mock(side_effect=[(0, proposal_succ), (0, response_succ)])
+        mock_do_request = mock.Mock(side_effect=[(0, proposal_ctoken_succ), (0, response_succ)])
         with mock.patch('rest.api.api.Client.do_request', mock_do_request):
             wc = WalletClient(
                     cert_store
@@ -482,7 +482,7 @@ class WalletTest(unittest.TestCase):
     def test_issue_asset_err(self):
         """Test issue asset with error code. """
 
-        mock_do_request = mock.Mock(side_effect=[(0, proposal_succ), (0, response_fail)])
+        mock_do_request = mock.Mock(side_effect=[(0, proposal_ctoken_succ), (0, response_fail)])
         with mock.patch('rest.api.api.Client.do_request', mock_do_request):
             wc = WalletClient(cert_store)
             body = {
