@@ -495,14 +495,10 @@ class WalletClient(object):
                 payload,
                 params
         )
-        if "txs" not in issue_pre_resp:
-            raise Exception("issue ctoken proposal failed: {}".format(issue_pre_resp))
-        
-        txs = issue_pre_resp["txs"]
         issuer = payload["issuer"]
 
         # 2 sign public key as signature
-        txs = self.__sign_txs(issuer, txs, params)
+        txs = self.__sign_txs(issuer, issue_pre_resp, params)
 
         # 3 call ProcessTx to transfer formally
         time_dur_t, result = self.process_tx(header, txs)

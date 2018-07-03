@@ -151,7 +151,7 @@ After creating the wallet account, you can create POE assets with this account a
 **owner** being the wallet account ID.
 
 * When building the signature parameter `privateB64`, use the Base64 encoded
-ED25519 private key returned by [the regisering API](https://github.com/arxanchain/wallet-sdk-py#register-a-wallet-client).
+ED25519 private key returned by [the regisering API](https://github.com/arxanchain/wallet-sdk-py#register-wallet-client).
 
 ### Upload POE file
 
@@ -165,7 +165,7 @@ After creating POE, you can upload the POE file for this account as follows:
 >>> print resp
 ```
 
-* The `upload` API uploads the file to **Offchain** storage, generates an SHA256
+* The `upload_poe` API uploads the file to **Offchain** storage, generates an SHA256
 hash value, and saves this hash value into blockchain.
 
 ### Issue colored token using digital asset
