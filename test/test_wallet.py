@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Copyright ArxanFintech Technology Ltd. 2018 All Rights Reserved.
 
@@ -62,6 +64,14 @@ payload = {
     "fee": {
         "amount": 10
     }
+}
+create_poe_payload = {
+    "id": "",
+    "name": "name",
+    "parent_id": "parent-poe-id",
+    "owner": "owner did",
+    "hash": "metadata-hash",
+    "metadata": map(ord, '{"address": "北京市", "telephone": "xxx"}')
 }
 proposal_succ = {
     "ErrMessage": "",
@@ -242,7 +252,7 @@ class WalletTest(unittest.TestCase):
                 "creator": fromdid,
                 "created": create_time,
                 "privateB64": secret_key_b64,
-                "payload": payload,
+                "payload": create_poe_payload,
                 "nonce": ""
             }
 
@@ -261,7 +271,7 @@ class WalletTest(unittest.TestCase):
                 "creator": fromdid,
                 "created": create_time,
                 "privateB64": secret_key_b64,
-                "payload": payload,
+                "payload": create_poe_payload,
                 "nonce": ""
             }
 
