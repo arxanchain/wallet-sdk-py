@@ -54,7 +54,7 @@ class WalletClient(object):
                     ])
         else:
             request_url = "/".join([
-                    self.__url,
+                    self.__client.get_ip(),
                     VERSION,
                     self.__path,
                     ])
