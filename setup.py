@@ -26,7 +26,7 @@ setup(
         "py-common==v2.0"
         ],
     dependency_links=[
-        "git+git://github.com/arxanchain/py-common.git@master#egg=py-common-v2.0"
+        "git+git://github.com/arxanchain/py-common.git@v2.0#egg=py-common-v2.0"
     ],
     include_package_data=True,
     zip_safe=False,
