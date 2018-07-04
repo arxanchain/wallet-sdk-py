@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Copyright ArxanFintech Technology Ltd. 2018 All Rights Reserved.
 
@@ -52,7 +54,7 @@ class WalletClient(object):
                     ])
         else:
             request_url = "/".join([
-                    self.__url,
+                    self.__client.get_ip(),
                     VERSION,
                     self.__path,
                     ])

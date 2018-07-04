@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Copyright ArxanFintech Technology Ltd. 2018 All Rights Reserved.
 
@@ -50,7 +52,7 @@ payload = {
     "parent_id": "xxxxx",
     "owner": "did:axn:8uQhQMGzWxR8vw5P3UWH1j",
     "metadata": {
-        "address": "xxx",
+        "address": "北京市",
         "telephone": "xxx",
     },
 }
