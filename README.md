@@ -15,6 +15,13 @@ tagging, compressing, encrypting and high availability.
 
 We appreciate all kinds of contributions, such as opening issues, fixing bugs and improving documentation.
 
+## Pre-requisite
+The SDK requires the `python-pip` package(version >= 9.0.1), so please make sure it's already installed. Run the following cmd to install.
+
+```sh
+$ sudo apt-get install python-pip
+```
+
 ## Install
 
 You have two ways to prepare wallet-sdk-py environment. One way you can use shell command, the other way you can step by step to install all environment.
