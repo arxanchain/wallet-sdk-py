@@ -86,6 +86,13 @@ proposal_ctoken_succ = {
     "ErrCode": 0,
     "Method": ""
 }
+
+proposal_asset_succ = {
+    "ErrMessage": "",
+    "Payload": '[{"txin": [{"sourceHash": "25IOjlVtNJeVeFaRpyFStKaDYfXAEHimD7FbHq4YpW4="}], "founder": "did:axn:8uQhQMGzWxR8vw5P3UWH1j", "timestamp": {"time": {"seconds": 1528446360, "nanos": 854334288}}, "txType": 1, "version": 1, "txout": [{"addr": "did:axn:d435be4b-046a-4a7c-b3a7-29e11d5e8c18", "script": "eyJwdWJsaWNLZXkiOiJ0V2Myck1oNS9jRFo5OTYvM0lNRFNaWEVGd2VTcVBuU0trUHVrMFNDdkhBPSJ9", "cTokenId": "1e1d5e6716274608d054cfc4385786681549ed0b70c4ec44ee6a50ba3e0332b6", "cType": 1, "value": 55, "until": -1}, {"addr": "did:axn:e9dee062-21de-43dd-9d33-ba68cba523e5", "script": "eyJwdWJsaWNLZXkiOiIxUTJxcG14amNQMEg4Qkp1a09FSUYycHhlRU4xZElIQXZsT1N2M1dtMVU0PSJ9", "cTokenId": "1e1d5e6716274608d054cfc4385786681549ed0b70c4ec44ee6a50ba3e0332b6", "cType": 1, "value": 497, "until": -1}]}]',
+    "ErrCode": 0,
+    "Method": ""
+}
 response_succ = {
     "ErrCode":0,
     "ErrMessage":"",
@@ -401,7 +408,7 @@ class WalletTest(unittest.TestCase):
     def test_transfer_asset_succ(self):
         """Test transfer asset successfully returned. """
 
-        mock_do_request = mock.Mock(side_effect=[(0, proposal_succ), (0, response_succ)])
+        mock_do_request = mock.Mock(side_effect=[(0, proposal_ctoken_succ), (0, response_succ)])
         with mock.patch('rest.api.api.Client.do_request', mock_do_request):
             wc = WalletClient(
                     cert_store
@@ -420,7 +427,7 @@ class WalletTest(unittest.TestCase):
     def test_transfer_asset_err(self):
         """Test transfer asset with error code. """
 
-        mock_do_request = mock.Mock(side_effect=[(0, proposal_succ), (0, response_fail)])
+        mock_do_request = mock.Mock(side_effect=[(0, proposal_ctoken_succ), (0, response_fail)])
         with mock.patch('rest.api.api.Client.do_request', mock_do_request):
             wc = WalletClient(
                     cert_store

@@ -400,14 +400,11 @@ class WalletClient(object):
                 payload,
                 params
         )
-        if "txs" not in trans_pre_resp:
-            raise Exception("transfer assets proposal failed: {}".format(trans_pre_resp))
-        
-        txs = trans_pre_resp["txs"]
+
         from_ = payload["from"]
 
         # 2 sign public key as signature
-        txs = self.__sign_txs(from_, txs, params)
+        txs = self.__sign_txs(from_, trans_pre_resp, params)
 
         # 3 call ProcessTx to transfer formally
         time_dur_t, result = self.process_tx(header, txs)
