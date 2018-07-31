@@ -191,7 +191,6 @@ tokens as follows:
 ...     "amount": 1000,
 ...     "fee": {
 ...         "amount": 5,
-...             }
 ...     }
 ... }
 >>> params = {
@@ -225,7 +224,6 @@ tokens, and can transfer some of them to other wallet accounts.
 ...     ],
 ...     "fee": {
 ...         "amount": 5,
-...             }
 ...     }
 ... }
 >>> params = {
