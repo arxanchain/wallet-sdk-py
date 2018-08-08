@@ -98,6 +98,21 @@ response_succ = {
     "ErrMessage":"",
     "Method":"",
     "Payload":"{\"code\":0,\"message\":\"\",\"id\":\"did:axn:2ebde184-e3e1-4964-9b8b-403d06494a5f\",\"endpoint\":\"524a81d5a0d4b54c6c10dbfbb447282b4110720198ec55a7440b0041691268d5\",\"key_pair\":{\"private_key\":\"xGw+VdU3XkCCpCZP5vxs2sXIVh/NnJ+bwjSO5rQkAOpKGpHqf5JDJhNbieFJiz7IfR/hmNNE9MI1xnnxNCzamw==\",\"public_key\":\"ShqR6n+SQyYTW4nhSYs+yH0f4ZjTRPTCNcZ58TQs2ps=\"},\"created\":1519893992,\"coin_id\":\"\",\"transaction_ids\":[\"c9d29dba1a6b3f6935c9e8db0fa4a651a83b00ac53eeb4d73e00812bc020486c\",\"83a09d0c5c30a988ac110c14eb4a5612946f2f3f7855aa993dfaef03cb783ecd\",\"1428f7a821b5455aab4e782bfabbe3bad86dbaa99e010d0755988fd37a43c8e2\"]}"}
+
+get_index_succ = {
+    "ErrCode":0,
+    "ErrMessage":"",
+    "Method":"",
+    "Payload":"[\"did:axn:string\"]"
+}
+
+set_index_succ = {
+    "ErrCode":0,
+    "ErrMessage":"",
+    "Method":"",
+    "Payload":"[\"transactionID1\", \"transactionID2\"]"
+}
+
 response_fail = {
     "Method":"",
     "ErrCode":107,
@@ -121,7 +136,7 @@ class WalletTest(unittest.TestCase):
             wc = WalletClient(cert_store)
             body={
                 "id": "did:axn:21tDAKCERh95uGgKbJNHYp",
-                "type": "Organization",
+                "type": 2,
                 "access": "xxxxx",
                 "secret": "xxxx",
                 "public_key":  {
@@ -143,7 +158,7 @@ class WalletTest(unittest.TestCase):
                     )
             body={
                 "id": "did:axn:21tDAKCERh95uGgKbJNHYp",
-                "type": "Organization",
+                "type": 2,
                 "access": "xxxxx",
                 "secret": "xxxx",
                 "public_key":  {
@@ -165,7 +180,7 @@ class WalletTest(unittest.TestCase):
                     )
             body={
                 "id": "did:axn:21tDAKCERh95uGgKbJNHYp",
-                "type": "Organization",
+                "type": 2,
                 "access": "xxxxx",
                 "secret": "xxxx",
                 "public_key":  {
@@ -187,7 +202,7 @@ class WalletTest(unittest.TestCase):
                     )
             body={
                 "id": "did:axn:21tDAKCERh95uGgKbJNHYp",
-                "type": "Organization",
+                "type": 2,
                 "access": "xxxxx",
                 "secret": "xxxx",
                 "public_key":  {
@@ -510,4 +525,64 @@ class WalletTest(unittest.TestCase):
                 "privateB64": secret_key_b64
             }   
             _, resp = wc.issue_asset({}, payload, body)
+            self.assertEqual(resp["ErrCode"], 107)
+
+    def test_set_index_succ(self):
+        """Test set index successfully returned. """
+
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            indexs = {
+                "combined_index": ["first_index", "second_index", "third_index"],
+                "individual_index": ["individual_index_1", "individual_index_2", "individual_index_3"],
+            }
+            _, resp = wc.set_index({}, "did:arx:string1", indexs)
+            self.assertEqual(resp["ErrCode"], 0)
+
+    def test_set_index_err(self):
+        """Test set index with error code. """
+
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            indexs = {
+                "combined_index": ["first_index", "second_index", "third_index"],
+                "individual_index": ["individual_index_1", "individual_index_2", "individual_index_3"],
+            }
+            _, resp = wc.set_index({}, "did:arx:string2", indexs)
+            self.assertEqual(resp["ErrCode"], 107)
+
+    def test_get_index_succ(self):
+        """Test get index successfully returned. """
+
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            indexs = {
+                "combined_index": ["first_index", "second_index", "third_index"],
+                "individual_index": ["individual_index_1", "individual_index_2", "individual_index_3"],
+            }
+            _, resp = wc.get_index({}, indexs)
+            self.assertEqual(resp["ErrCode"], 0)
+
+    def test_get_index_err(self):
+        """Test get index with error code. """
+
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            indexs = {
+                "combined_index": ["first_index", "second_index", "third_index"],
+                "individual_index": ["individual_index_1", "individual_index_2", "individual_index_3"],
+            }
+            _, resp = wc.get_index({}, indexs)
             self.assertEqual(resp["ErrCode"], 107)

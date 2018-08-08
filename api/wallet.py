@@ -568,3 +568,40 @@ class WalletClient(object):
             req_params,
             method
             )
+
+    def set_index(self, header, id_, indexs):
+        """Set the index for did """
+        req_path = "index/set"
+        method = self.__client.do_post
+        body = {
+            "id": id_,
+            "indexs": indexs
+        }
+
+        req_params = self.__set_params(
+            header,
+            req_path,
+            body=body
+        )
+        return self.__client.do_request(
+            req_params,
+            method
+        )
+
+    def get_index(self, header, indexs):
+        """Get the did by index"""
+        req_path = "index/get"
+        method = self.__client.do_post
+        body = {
+            "indexs": indexs
+        }
+
+        req_params = self.__set_params(
+            header,
+            req_path,
+            body=body
+        )
+        return self.__client.do_request(
+            req_params,
+            method
+        )
