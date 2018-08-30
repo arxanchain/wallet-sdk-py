@@ -605,3 +605,61 @@ class WalletClient(object):
             req_params,
             method
         )
+
+    def get_tx_logs(self, header, did, tx_type, num, page):
+        """ Get transaction logs"""
+        req_path = "transaction/logs"
+        method = self.__client.do_get
+        params = {
+                "id": did,
+                "type": tx_type,
+                "num": num,
+                "page": page
+                }
+        req_params = self.__set_params(
+            header,
+            req_path, 
+            params
+            )
+        return self.__client.do_request(
+            req_params,
+            method
+            )
+
+    def get_tx_utxo(self, header, did, num, page):
+        """ Get transaction utxo"""
+        req_path = "transaction/utxo"
+        method = self.__client.do_get
+        params = {
+                "id": did,
+                "num": num,
+                "page": page
+                }
+        req_params = self.__set_params(
+            header,
+            req_path, 
+            params
+            )
+        return self.__client.do_request(
+            req_params,
+            method
+            )
+
+    def get_tx_stxo(self, header, did, num, page):
+        """ Get transaction stxo"""
+        req_path = "transaction/stxo"
+        method = self.__client.do_get
+        params = {
+                "id": did,
+                "num": num,
+                "page": page
+                }
+        req_params = self.__set_params(
+            header,
+            req_path, 
+            params
+            )
+        return self.__client.do_request(
+            req_params,
+            method
+            )
