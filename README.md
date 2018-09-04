@@ -248,6 +248,46 @@ account as follows:
 >>> print resp
 ```
 
+### Query transaction logs
+
+You can use the `get_tx_logs` API to get transaction logs of the specified wallet
+account as follows:
+
+```python
+>>> id_ = "wallet id"
+>>> tx_type = "in"
+>>> num = 1 # number of logs to query
+>>> page = 1 # page of logs to query
+>>> _, resp = wallet.get_tx_logs({}, id, tx_type, num, page)
+>>> print resp
+```
+
+### Query transaction UTXO
+
+You can use the `get_tx_utxo` API to get transaction UTXO of the specified wallet
+account as follows:
+
+```python
+>>> id_ = "wallet id"
+>>> num = 1
+>>> page = 1
+>>> _, resp = wallet.get_tx_utxo({}, id, num, page)
+>>> print resp
+```
+
+### Query transaction STXO
+
+You can use the `get_tx_stxo` API to get transaction STXO of the specified wallet
+account as follows:
+
+```python
+>>> id_ = "wallet id"
+>>> num = 1
+>>> page = 1
+>>> _, resp = wallet.get_tx_stxo({}, id, num, page)
+>>> print resp
+```
+
 ### Use callback URL to receive blockchain transaction events
 Each of the APIs to invoke blockchain has two invoking modes: - `sync` and `async`.
 

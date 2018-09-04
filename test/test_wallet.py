@@ -586,3 +586,75 @@ class WalletTest(unittest.TestCase):
             }
             _, resp = wc.get_index({}, indexs)
             self.assertEqual(resp["ErrCode"], 107)
+
+    def test_get_tx_logs_succ(self):
+        """ Test query wallet tx logs successfully returned. """
+
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
+            _, resp = wc.get_tx_logs({}, id_, "in", 0, 0)
+            self.assertEqual(resp["ErrCode"], 0)
+
+    def test_get_tx_logs_err(self):
+        """ Test query wallet tx logs with error code. """
+
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
+            _, resp = wc.get_tx_logs({}, id_, "in", 0, 0)
+            self.assertEqual(resp["ErrCode"], 107)
+
+    def test_query_utxo_succ(self):
+        """ Test query wallet tx utxo successfully returned. """
+
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
+            _, resp = wc.get_tx_utxo({}, id_, 0, 0)
+            self.assertEqual(resp["ErrCode"], 0)
+
+    def test_query_utxo_err(self):
+        """ Test query utxo with error code. """
+
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
+            _, resp = wc.get_tx_utxo({}, id_, 0, 0)
+            self.assertEqual(resp["ErrCode"], 107)
+
+    def test_query_stxo_succ(self):
+        """ Test query wallet tx stxo successfully returned. """
+
+        mock_do_request = mock.Mock(return_value=(0, response_succ))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
+            _, resp = wc.get_tx_stxo({}, id_, 0, 0)
+            self.assertEqual(resp["ErrCode"], 0)
+
+    def test_query_stxo_err(self):
+        """ Test query stxo with error code. """
+
+        mock_do_request = mock.Mock(return_value=(0, response_fail))
+        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
+            wc = WalletClient(
+                    cert_store
+                    )
+            id_ = "did:axn:2ef06aa4-05bb-4728-8882-343d42faeb8f"
+            _, resp = wc.get_tx_stxo({}, id_, 0, 0)
+            self.assertEqual(resp["ErrCode"], 107)
