@@ -26,7 +26,6 @@ sys.setdefaultencoding('utf-8')
 import requests
 from rest.api.common import APIKEYHEADER, FABIOROUTETAGHEADER, ROUTETAG, \
         build_signature_body, build_signature_body_base
-from common import VERSION
 
 class WalletClient(object):
     """A wallet client implementation."""
@@ -57,14 +56,12 @@ class WalletClient(object):
         if req_path:
             request_url = "/".join([
                     self.__client.get_ip(),
-                    VERSION,
                     # self.__path,
                     req_path
                     ])
         else:
             request_url = "/".join([
                     self.__client.get_ip(),
-                    VERSION
                     # self.__path,
                     ])
         if url_params:
@@ -90,7 +87,7 @@ class WalletClient(object):
 
     def register(self, header, body):
         """Register user wallet."""
-        req_dir = "wallet/register"
+        req_dir = "v1/wallet/register"
         method = self.__client.do_post
 
         req_params = self.__set_params(
@@ -105,7 +102,7 @@ class WalletClient(object):
 
     def register_sub_wallet(self, header, body):
         """Register a sub wallet."""
-        req_dir = "wallet/register/subwallet"
+        req_dir = "v1/wallet/register/subwallet"
         method = self.__client.do_post
 
         req_params = self.__set_params(
@@ -121,7 +118,7 @@ class WalletClient(object):
     def update_password(self, header, body):
         """Update wallet password."""
 
-        req_dir = "wallet/password"
+        req_dir = "v1/wallet/password"
         method = self.__client.do_put
         req_params = self.__set_params(
                 header,
@@ -136,7 +133,7 @@ class WalletClient(object):
     def create_payment_password(self, header, body):
         """Create wallet payment password."""
 
-        req_dir = "wallet/payment_passwd"
+        req_dir = "v1/wallet/payment_passwd"
         method = self.__client.do_post
         req_params = self.__set_params(
                 header,
@@ -151,7 +148,7 @@ class WalletClient(object):
     def update_payment_password(self, header, body):
         """Update payment password."""
 
-        req_dir = "wallet/payment_passwd"
+        req_dir = "v1/wallet/payment_passwd"
         method = self.__client.do_put
         req_params = self.__set_params(
                 header,
@@ -166,7 +163,7 @@ class WalletClient(object):
     def query_wallet_infos(self, header, id_):
         """Query wallet infos."""
 
-        req_dir = "wallet/info"
+        req_dir = "v1/wallet/info"
         req_dir = "?".join([req_dir, "id={}".format(id_)])
         method = self.__client.do_get
         req_params = self.__set_params(header, req_dir)
@@ -178,7 +175,7 @@ class WalletClient(object):
     def query_wallet_balance(self, header, id_):
         """Query wallet balalce"""
 
-        req_dir = "wallet/balance"
+        req_dir = "v1/wallet/balance"
         params = {"id": id_}
         method = self.__client.do_get
         req_params = self.__set_params(
@@ -195,7 +192,7 @@ class WalletClient(object):
         """Create a POE with ed25519 signed body. """
 
         payload = json.dumps(payload)
-        req_path = "poe/create"
+        req_path = "v1/poe/create"
         method = self.__client.do_post
         params["payload"] = payload
         signature = build_signature_body(**params)
@@ -218,7 +215,7 @@ class WalletClient(object):
         """Update a POE with ed25519 signed body."""
 
         payload = json.dumps(payload)
-        req_path = "poe/update"
+        req_path = "v1/poe/update"
         method = self.__client.do_put
         params["payload"] = payload
         signature = build_signature_body(**params)
@@ -241,7 +238,7 @@ class WalletClient(object):
         """Query a POE."""
 
         params= {"id": id_}
-        req_path="poe"
+        req_path="v1/poe"
         method = self.__client.do_get
         req_params = self.__set_params(
                 header,
@@ -255,7 +252,7 @@ class WalletClient(object):
 
     def upload_poe(self, header, file_, poe_id, readonly):
         """Upload POE file. """
-        req_path = "poe/upload"
+        req_path = "v1/poe/upload"
         poefile = "application/octet-stream"
         filepart = (
                 file_,
@@ -284,7 +281,8 @@ class WalletClient(object):
 
         return self.__client.do_prepare(prepared)
 
-    def __sign_txs(self, issuer, txs, params):
+    def sign_txs(self, txs, params):
+        issuer = params["creator"]
         for i, tx in enumerate(txs):
             if tx["founder"] != issuer:
                 # sign fee by platform private key
@@ -327,17 +325,15 @@ class WalletClient(object):
         # 1 send transfer proposal to get wallet.Tx
         time_dur_p, issue_pre_resp = self.issue_ctoken_proposal(
                 header,
-                payload,
-                params
+                payload
         )
         if "txs" not in issue_pre_resp:
             raise Exception("issue ctoken proposal failed: {}".format(issue_pre_resp))
         
         txs = issue_pre_resp["txs"]
-        issuer = payload["issuer"]
 
         # 2 sign public key as signature
-        txs = self.__sign_txs(issuer, txs, params)
+        txs = self.sign_txs(txs, params)
 
         # 3 call ProcessTx to transfer formally
         time_dur_t, result = self.process_tx(header, txs)
@@ -352,7 +348,7 @@ class WalletClient(object):
         if txs is None or len(txs) <= 0:
             raise Exception("txs should not be empty!")
 
-        req_path = "transaction/process"
+        req_path = "v2/transaction/process"
         body = {"txs": txs}
         method = self.__client.do_post
         req_params = self.__set_params(
@@ -366,22 +362,17 @@ class WalletClient(object):
                 )
 
 
-    def issue_ctoken_proposal(self, header, payload, params):
+    def issue_ctoken_proposal(self, header, payload):
         """ Issue ctoken proposal."""
         
         payload = json.dumps(payload)
-        req_path = "transaction/tokens/issue/prepare"
+        req_path = "v2/transaction/tokens/issue/prepare"
         method = self.__client.do_post
-        params["payload"] = payload
-        signature = build_signature_body(**params)
-        body = {
-                "payload": payload,
-                "signature": signature
-                }
+
         req_params = self.__set_params(
                 header,
                 req_path,
-                body=body
+                body=payload
                 )
         time_dur, result = self.__client.do_request(
                 req_params,
@@ -397,14 +388,11 @@ class WalletClient(object):
         # 1 send transfer proposal to get wallet.Tx
         time_dur_p, trans_pre_resp = self.transfer_assets_proposal(
                 header,
-                payload,
-                params
+                payload
         )
 
-        from_ = payload["from"]
-
         # 2 sign public key as signature
-        txs = self.__sign_txs(from_, trans_pre_resp, params)
+        txs = self.sign_txs(trans_pre_resp, params)
 
         # 3 call ProcessTx to transfer formally
         time_dur_t, result = self.process_tx(header, txs)
@@ -412,22 +400,17 @@ class WalletClient(object):
         return time_dur_p+time_dur_t, result
 
 
-    def transfer_assets_proposal(self, header, payload, params):
+    def transfer_assets_proposal(self, header, payload):
         """ Transfer assets proposal."""
         
         payload = json.dumps(payload)
-        req_path = "transaction/assets/transfer/prepare"
+        req_path = "v2/transaction/assets/transfer/prepare"
         method = self.__client.do_post
-        params["payload"] = payload
-        signature = build_signature_body(**params)
-        body = {
-                "payload": payload,
-                "signature": signature
-                }
+
         req_params = self.__set_params(
                 header,
                 req_path,
-                body=body
+                body=payload
                 )
         time_dur, result = self.__client.do_request(
                 req_params,
@@ -444,13 +427,11 @@ class WalletClient(object):
         # 1 send transfer proposal to get wallet.Tx
         time_dur_p, txs = self.transfer_ctoken_proposal(
                 header,
-                payload,
-                params
+                payload
         )
-        from_ = payload["from"]
 
         # 2 sign public key as signature
-        txs = self.__sign_txs(from_, txs, params)
+        txs = self.sign_txs(txs, params)
 
         # 3 call ProcessTx to transfer formally
         time_dur_t, result = self.process_tx(header, txs)
@@ -458,22 +439,17 @@ class WalletClient(object):
         return time_dur_p+time_dur_t, result
         
 
-    def transfer_ctoken_proposal(self, header, payload, params):
+    def transfer_ctoken_proposal(self, header, payload):
         """ Transfer ctoken proposal."""
         
         payload = json.dumps(payload)
-        req_path = "transaction/tokens/transfer/prepare"
+        req_path = "v2/transaction/tokens/transfer/prepare"
         method = self.__client.do_post
-        params["payload"] = payload
-        signature = build_signature_body(**params)
-        body = {
-                "payload": payload,
-                "signature": signature
-                }
+
         req_params = self.__set_params(
                 header,
                 req_path,
-                body=body
+                body=payload
                 )
         time_dur, result = self.__client.do_request(
                 req_params,
@@ -490,13 +466,11 @@ class WalletClient(object):
          # 1 send transfer proposal to get wallet.Tx
         time_dur_p, issue_pre_resp = self.issue_assets_proposal(
                 header,
-                payload,
-                params
+                payload
         )
-        issuer = payload["issuer"]
 
         # 2 sign public key as signature
-        txs = self.__sign_txs(issuer, issue_pre_resp, params)
+        txs = self.sign_txs(issue_pre_resp, params)
 
         # 3 call ProcessTx to transfer formally
         time_dur_t, result = self.process_tx(header, txs)
@@ -504,35 +478,31 @@ class WalletClient(object):
         return time_dur_p+time_dur_t, result
 
 
-    def issue_assets_proposal(self, header, payload, params):
+    def issue_assets_proposal(self, header, payload):
         """ Issue assets proposal."""
         
         payload = json.dumps(payload)
-        req_path = "transaction/assets/issue/prepare"
+        req_path = "v2/transaction/assets/issue/prepare"
         method = self.__client.do_post
-        params["payload"] = payload
-        signature = build_signature_body(**params)
-        body = {
-                "payload": payload,
-                "signature": signature
-                }
+
         req_params = self.__set_params(
                 header,
                 req_path,
-                body=body
+                body=payload
                 )
         time_dur, result = self.__client.do_request(
                 req_params,
                 method
                 )
         payload = json.loads(result["Payload"])
+
         return time_dur, payload
 
 
     def query_txn_logs_with_endpoint(self, header, type_, endpoint):
         """Query transactions logs. """
 
-        req_path = "logs"
+        req_path = "v2/transaction/logs"
         method = self.__client.do_get
         params = {
                 "type": type_,
@@ -552,7 +522,7 @@ class WalletClient(object):
     def query_txn_logs_with_id(self, header, type_, id_):
         """Query transactions logs with param id. """
 
-        req_path = "logs"
+        req_path = "v2/transaction/logs"
         method = self.__client.do_get
         params = {
                 "type": type_,
@@ -571,7 +541,7 @@ class WalletClient(object):
 
     def set_index(self, header, id_, indexs):
         """Set the index for did """
-        req_path = "index/set"
+        req_path = "v1/index/set"
         method = self.__client.do_post
         body = {
             "id": id_,
@@ -590,7 +560,7 @@ class WalletClient(object):
 
     def get_index(self, header, indexs):
         """Get the did by index"""
-        req_path = "index/get"
+        req_path = "v1/index/get"
         method = self.__client.do_post
         body = {
             "indexs": indexs
@@ -608,7 +578,7 @@ class WalletClient(object):
 
     def get_tx_logs(self, header, did, tx_type, num, page):
         """ Get transaction logs"""
-        req_path = "transaction/logs"
+        req_path = "v2/transaction/logs"
         method = self.__client.do_get
         params = {
                 "id": did,
@@ -628,7 +598,7 @@ class WalletClient(object):
 
     def get_tx_utxo(self, header, did, num, page):
         """ Get transaction utxo"""
-        req_path = "transaction/utxo"
+        req_path = "v2/transaction/utxo"
         method = self.__client.do_get
         params = {
                 "id": did,
@@ -647,7 +617,7 @@ class WalletClient(object):
 
     def get_tx_stxo(self, header, did, num, page):
         """ Get transaction stxo"""
-        req_path = "transaction/stxo"
+        req_path = "v2/transaction/stxo"
         method = self.__client.do_get
         params = {
                 "id": did,
