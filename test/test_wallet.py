@@ -47,7 +47,7 @@ cert_store = Client(
         )
 secret_key_b64 = "0lxEFzMQhn68vY2F0f+nOwP7kl5zjahjPcfyMAJVmzn0HNQssIIYh+c2CgCKEHeUvxqCu6W/sJKqKt2DLJnKpw=="
 nonce = "nonce"
-did = "did:ara:8uQhQMGzWxR8vw5P3UWH1j"
+did = "did:axn:8uQhQMGzWxR8vw5P3UWH1j"
 fromdid = "did:ara:9uQhQMGzWxR8vw5P3UWH1b"
 create_time = "1517818060"
 payload = {
