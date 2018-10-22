@@ -81,7 +81,9 @@ class WalletClient(object):
         req_params = {
                 "url": request_url,
                 "body": body,
-                "headers": header
+                "headers": header,
+                "cert": self.__client.get_cert(),
+                "verify": self.__client.get_verify()
                 }
         return req_params
 
@@ -365,7 +367,7 @@ class WalletClient(object):
     def issue_ctoken_proposal(self, header, payload):
         """ Issue ctoken proposal."""
         
-        payload = json.dumps(payload)
+        #payload = json.dumps(payload)
         req_path = "v2/transaction/tokens/issue/prepare"
         method = self.__client.do_post
 
@@ -403,7 +405,7 @@ class WalletClient(object):
     def transfer_assets_proposal(self, header, payload):
         """ Transfer assets proposal."""
         
-        payload = json.dumps(payload)
+        #payload = json.dumps(payload)
         req_path = "v2/transaction/assets/transfer/prepare"
         method = self.__client.do_post
 
@@ -442,7 +444,7 @@ class WalletClient(object):
     def transfer_ctoken_proposal(self, header, payload):
         """ Transfer ctoken proposal."""
         
-        payload = json.dumps(payload)
+        #payload = json.dumps(payload)
         req_path = "v2/transaction/tokens/transfer/prepare"
         method = self.__client.do_post
 
@@ -481,7 +483,7 @@ class WalletClient(object):
     def issue_assets_proposal(self, header, payload):
         """ Issue assets proposal."""
         
-        payload = json.dumps(payload)
+        #payload = json.dumps(payload)
         req_path = "v2/transaction/assets/issue/prepare"
         method = self.__client.do_post
 

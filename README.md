@@ -118,7 +118,9 @@ as follows:
 ...         "usage": "",
 ...         "key_type": "",
 ...         "public_key_data": ""
-...     }
+...     },
+...     "cert": ("/your/cert/path/cert.pem",  "/your/cert/path/cert.key"),
+...     "verify": "/your/ca/cert/path/ca.crt"
 ... }
 >>> _, resp = wallet.register(header, body)
 >>> print resp
