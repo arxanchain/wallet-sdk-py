@@ -82,9 +82,11 @@ class WalletClient(object):
                 "url": request_url,
                 "body": body,
                 "headers": header,
-                "cert": self.__client.get_cert(),
-                "verify": self.__client.get_verify()
                 }
+        if self.__client.ssl_enabled():
+            req_params["cert"] = self.__client.get_cert()
+            req_params["verify"] = self.__client.get_verify()
+
         return req_params
 
     def register(self, header, body):

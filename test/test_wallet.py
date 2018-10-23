@@ -41,9 +41,12 @@ cert_path = "/your/cert/path"
 ent_sign_param = {}
 cert_store = Client(
         APIKEY,
-        cert_path,
+        #cert_path,
         ent_sign_param,
-        IP
+        IP,
+        True,
+        cert=('./tls/client.pem', './tls/client.key'),
+        verify='./tls/ca.crt'
         )
 secret_key_b64 = "0lxEFzMQhn68vY2F0f+nOwP7kl5zjahjPcfyMAJVmzn0HNQssIIYh+c2CgCKEHeUvxqCu6W/sJKqKt2DLJnKpw=="
 nonce = "nonce"
