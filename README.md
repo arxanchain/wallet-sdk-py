@@ -24,26 +24,13 @@ $ sudo apt-get install python-pip
 
 ## Install
 
-You have two ways to prepare wallet-sdk-py environment. One way you can use shell command, the other way you can step by step to install all environment.
-
-### shell command
-
-If you want use shell command, you need to install golang and you should've configured your GOPATH environment variable.
-
-*Note:* ServerCert/PrivateKey file please use absolute path. ServerCert is TLS certificate, PrivateKey is private key from your ArxanChain BaaS ChainConsole.
-
-```sh
-$ ./scripts/prepare.sh APIKEY, ServerCert, PrivateKey
-```
-
-### step by step
 The following command will install wallet-sdk-py in your python environment.
 
 ```sh
 $ python setup.py install
 ```
 
-##### Usage
+## Usage
 
 *Note:* Before using the wallet-sdk-python in your application,
 you need to configure your installed py-common package.
@@ -72,7 +59,6 @@ the BAAS service need to use this object, you can register a client object as fo
 ```python
 >>> from rest.api.api import Client
 >>> apikey = "pWEzB4yMM1518346407"
->>> cert_path = "/usr/local/lib/python2.7/site-packages/py_common-2.0.1-py2.7.egg/cryption/ecc/certs"
 >>> ip_addr = "http://127.0.0.1:9143"
 >>> ent_sign_param = {
 ...     "creator": "did:axn:09e2fc68-f51e-4aff-b6e4-427cce3ed1af",
@@ -80,7 +66,9 @@ the BAAS service need to use this object, you can register a client object as fo
 ...     "nonce": "nonce",
 ...     "privateB64": "RiQ+oEuaelf2aecUZvG7xrWr+p43ZfjGZYfDCXfQD+ku0xY5BXP8kIKhiqzKRvfyKBKM3y7V9O1bF7X3M9mxkQ=="
 ... }
->>> client = Client(apikey, cert_path, ent_sign_param, ip_addr)
+>>> cert = ("/your/cert/path/client.pem",  "/your/cert/path/client.key"),
+>>> cacert = "/your/ca/cert/path/ca.crt"
+>>> client = Client(apikey, ent_sign_param, ip_addr, True, cert, cacert)
 ```
 
 Param **apikey** is set to the API access key applied on `ChainConsole` management page,
@@ -118,9 +106,7 @@ as follows:
 ...         "usage": "",
 ...         "key_type": "",
 ...         "public_key_data": ""
-...     },
-...     "cert": ("/your/cert/path/cert.pem",  "/your/cert/path/cert.key"),
-...     "verify": "/your/ca/cert/path/ca.crt"
+...     }
 ... }
 >>> _, resp = wallet.register(header, body)
 >>> print resp

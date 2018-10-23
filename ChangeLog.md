@@ -10,7 +10,7 @@
 
 * Implements get_tx_logs/get_tx_utxo/get_tx_stxo APIs
 
-## 2.3.0
+## v3.0
 
 * Update crypto mode from sign && encrypt into two-way HTTPs
 * Update version of transaction APIs from `v1` to `v2`
