@@ -63,7 +63,7 @@ $ pytest
 
 ### Wallet Platform API
 For details of Wallet APIs please refer to
-[Wallet APIs Documentation](http://www.arxanfintech.com/infocenter/html/development/wallet.html#wallet-platform-ref)
+[Wallet APIs Documentation](http://chain.arxanfintech.com/infocenter/html/development/wallet.html#wallet-platform-ref)
 
 ### Init a Client
 A client is used to wrap all the encryption/decryption details, any API that visits via
