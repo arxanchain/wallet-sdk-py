@@ -19,14 +19,14 @@ setup(
         "idna==2.6",
         "mock==2.0.0",
         "pbr==3.1.1",
-        "requests==2.18.4",
+        "requests==2.20.0",
         "six==1.11.0",
         "timeout-decorator",
         "urllib3==1.22",
         "py-common"
         ],
     dependency_links=[
-        "git+git://github.com/arxanchain/py-common.git@master#egg=py-common-v2.0.1"
+        "git+git://github.com/arxanchain/py-common.git@v2.1#egg=py-common-v2.1"
     ],
     include_package_data=True,
     zip_safe=False,
