@@ -19,7 +19,7 @@ setup(
         "idna==2.6",
         "mock==2.0.0",
         "pbr==3.1.1",
-        "requests==2.18.4",
+        "requests==2.20.0",
         "six==1.11.0",
         "timeout-decorator",
         "urllib3==1.22",
