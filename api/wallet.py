@@ -532,7 +532,7 @@ class WalletClient(object):
     def query_txn_logs_with_endpoint(self, header, type_, endpoint):
         """Query transactions logs. """
 
-        req_path = "logs"
+        req_path = "transaction/logs"
         method = self.__client.do_get
         params = {
                 "type": type_,
@@ -552,7 +552,7 @@ class WalletClient(object):
     def query_txn_logs_with_id(self, header, type_, id_):
         """Query transactions logs with param id. """
 
-        req_path = "logs"
+        req_path = "transaction/logs"
         method = self.__client.do_get
         params = {
                 "type": type_,
