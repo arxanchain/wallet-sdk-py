@@ -5,8 +5,8 @@ if [ ! -n "${GOPATH}" ]; then
     exit 1
 fi
 
-if [ $# != 3 ]; then
-    echo "You need input APIKEY, ServerCert, PrivateKey"
+if [ $# != 4 ]; then
+    echo "You need input APIKEY, ServerCert, PrivateKey, Version"
     exit 1
 fi
 
@@ -18,7 +18,38 @@ fi
 APIKEY=${1}
 ServerCert=${2}
 PrivateKey=${3}
-echo "API-KEY is ${APIKEY}, ServerCert is ${ServerCert}, PrivateKey is ${PrivateKey}"
+Version=${4}
+gitversion=""
+
+if [ $Version != "master" ]; then
+    if [[ ${Version:0:1} -ne "v" ]]; then
+        Version=v${4}
+    fi
+    gitversion="-b "${Version}
+fi
+echo "API-KEY is ${APIKEY}, ServerCert is ${ServerCert}, PrivateKey is ${PrivateKey}, Version is ${Version}"
+
+
+current_branch() {
+    dir=$1
+    if [ -d $dir/.git ]; then
+        cat $dir/.git/HEAD | awk -F "/" '{print $3}'
+    else
+        echo -1
+    fi
+}
+
+# $1 = dir; $2 = branch-name
+exist_branch() {
+    dir=$1
+    branch=$2
+    if [ -f $dir/.git/refs/heads/$branch ]; then
+        echo 1
+    else
+        echo 0
+    fi
+
+}
 
 readonly axn_dir=${GOPATH}/src/github.com/arxanchain/
 if [ ! -d "${axn_dir}" ]; then
@@ -29,11 +60,25 @@ echo "start wallet-sdk-py"
 if [ ! -d "${axn_dir}/wallet-sdk-py" ]; then
     echo "git clone wallet-sdk-py"
     cd ${axn_dir}
-    git clone https://github.com/arxanchain/wallet-sdk-py.git
+    git clone ${gitversion} https://github.com/arxanchain/wallet-sdk-py.git
 else
     echo "already wallet-sdk-py"
     cd ${axn_dir}/wallet-sdk-py
     git pull
+    isExist=$(exist_branch "." $Version)
+    if [ $isExist ne 0 ]; then
+        cur=$(current_branch ".")
+        if [ "$cur"x != "$Version"x ]; then
+            echo "$Version branch already exist, checkout it"
+            git checkout $Version
+        else
+            echo "already on branch $Version"
+        fi
+        git pull
+    else
+        echo "$Version branch not exist, create it"
+        git checkout -b ${Version} origin/${Version}
+    fi
 fi
 
 echo "start install wallet-sdk-py (include py-common)"

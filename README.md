@@ -33,7 +33,7 @@ If you want use shell command, you need to install golang and you should've conf
 *Note:* ServerCert/PrivateKey file please use absolute path. ServerCert is TLS certificate, PrivateKey is private key from your ArxanChain BaaS ChainConsole.
 
 ```sh
-$ ./scripts/prepare.sh APIKEY, ServerCert, PrivateKey
+$ ./scripts/prepare.sh APIKEY ServerCert PrivateKey Version
 ```
 
 ### step by step
