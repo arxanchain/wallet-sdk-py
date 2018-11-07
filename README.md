@@ -24,6 +24,19 @@ $ sudo apt-get install python-pip
 
 ## Install
 
+You have two ways to prepare wallet-sdk-py environment. One way you can use shell command, the other way you can step by step to install all environment.
+
+### shell command
+
+If you want use shell command, you need to install golang and you should've configured your GOPATH environment variable.
+
+*Note:* ServerCert/PrivateKey file please use absolute path. ServerCert is TLS certificate, PrivateKey is private key from your ArxanChain BaaS ChainConsole.
+
+```sh
+$ ./scripts/prepare.sh APIKEY ServerCert PrivateKey Version
+```
+
+### step by step
 The following command will install wallet-sdk-py in your python environment.
 
 ```sh
