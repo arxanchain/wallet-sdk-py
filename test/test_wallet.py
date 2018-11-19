@@ -386,43 +386,6 @@ class WalletTest(unittest.TestCase):
             _, resp = wc.upload_poe({}, file_, poeid, readonly)
             self.assertEqual(resp["ErrCode"], 107)
 
-    def test_query_txn_logs_with_endpoint_succ(self):
-    
-        mock_do_request = mock.Mock(return_value=(0, response_succ))
-        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
-            wc = WalletClient(
-                    cert_store
-                    )
-            _, resp = wc.query_txn_logs_with_endpoint({}, "in", "endpoint001")
-            self.assertEqual(resp["ErrCode"], 0)
-
-    def test_query_txn_logs_with_endpoint_err(self):
-        mock_do_request = mock.Mock(return_value=(0, response_fail))
-        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
-            wc = WalletClient(
-                    cert_store
-                    )
-            _, resp = wc.query_txn_logs_with_endpoint({}, "in", "endpoint001")
-            self.assertEqual(resp["ErrCode"], 107)
-
-    def test_query_txn_logs_with_id_succ(self):
-        mock_do_request = mock.Mock(return_value=(0, response_succ))
-        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
-            wc = WalletClient(
-                    cert_store
-                    )
-            _, resp = wc.query_txn_logs_with_id({}, "in", "yourID")
-            self.assertEqual(resp["ErrCode"], 0)
-
-    def test_query_txn_logs_with_id_err(self):
-        mock_do_request = mock.Mock(return_value=(0, response_fail))
-        with mock.patch('rest.api.api.Client.do_request', mock_do_request):
-            wc = WalletClient(
-                    cert_store
-                    )
-            _, resp = wc.query_txn_logs_with_id({}, "in", "yourID")
-            self.assertEqual(resp["ErrCode"], 107)
-
     def test_transfer_asset_succ(self):
         """Test transfer asset successfully returned. """
 

@@ -502,47 +502,6 @@ class WalletClient(object):
 
         return time_dur, payload
 
-
-    def query_txn_logs_with_endpoint(self, header, type_, endpoint):
-        """Query transactions logs. """
-
-        req_path = "v2/transaction/logs"
-        method = self.__client.do_get
-        params = {
-                "type": type_,
-                "endpoin": endpoint
-                }
-
-        req_params = self.__set_params(
-            header,
-            req_path, 
-            params
-            )
-        return self.__client.do_request(
-            req_params,
-            method
-            )
-
-    def query_txn_logs_with_id(self, header, type_, id_):
-        """Query transactions logs with param id. """
-
-        req_path = "v2/transaction/logs"
-        method = self.__client.do_get
-        params = {
-                "type": type_,
-                "id": id_
-                }
-
-        req_params = self.__set_params(
-            header,
-            req_path, 
-            params
-            )
-        return self.__client.do_request(
-            req_params,
-            method
-            )
-
     def set_index(self, header, id_, indexs):
         """Set the index for did """
         req_path = "v1/index/set"
