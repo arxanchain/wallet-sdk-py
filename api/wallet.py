@@ -536,7 +536,7 @@ class WalletClient(object):
         method = self.__client.do_get
         params = {
                 "type": type_,
-                "endpoin": endpoint
+                "endpoint": endpoint
                 }
 
         req_params = self.__set_params(
