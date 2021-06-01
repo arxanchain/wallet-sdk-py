@@ -22,7 +22,7 @@ setup(
         "requests==2.18.4",
         "six==1.11.0",
         "timeout-decorator",
-        "urllib3==1.22",
+        "urllib3==1.26.5",
         "py-common"
         ],
     dependency_links=[
