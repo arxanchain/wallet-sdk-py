@@ -13,7 +13,7 @@ setup(
     packages=find_packages(),
     platforms='any',
     install_requires=[
-        "certifi==2018.1.18",
+        "certifi==2022.12.7",
         "chardet==3.0.4",
         "funcsigs==1.0.2",
         "idna==2.6",
